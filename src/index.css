@@ -1,0 +1,96 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+/* Fonts: Gilker (Canva display font) for Titles & Subtitles, SIRENIK for body/text */
+@font-face {
+  font-family: 'Gilker';
+  src: local('Gilker'), local('Gliker'), local('Gliker-Regular'), local('Gliker-Bold'), local('Gliker Regular'), local('Gliker Bold');
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SIRENIK';
+  src: local('SIRENIK'), local('Sirenik'), local('Sirenik-Regular'), local('Sirenik Regular');
+  font-weight: 300 800;
+  font-display: swap;
+}
+
+@layer base {
+  :root {
+    --ink: #263b2b;
+    --cream: #fff9ed;
+    --sand: #edd8ab;
+    --ochre: #b66b22;
+    --sun: #f4bb29;
+    --sky: #78bfd5;
+    --leaf: #557544;
+    --clay: #a84d2b;
+    --font-title: 'Gilker', 'Gliker', 'Fraunces', Georgia, serif;
+    --font-text: 'SIRENIK', 'Sirenik', 'Cormorant Garamond', 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+  }
+
+  :root {
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  body {
+    font-family: var(--font-text) !important;
+    font-variant-numeric: lining-nums tabular-nums;
+    color: var(--ink);
+    background-color: var(--cream);
+    background-image: radial-gradient(#b66b22 0.75px, transparent 0.75px);
+    background-size: 24px 24px;
+    background-attachment: fixed;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-serif-fraunces, .title-font, [class*="font-serif"] {
+    font-family: var(--font-title) !important;
+    letter-spacing: -0.01em;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  body, p, span, button, input, label, select, textarea, li, a, td, th, div:not([class*="font-serif"]) {
+    font-family: var(--font-text);
+  }
+
+  p, span, li, a, label, button, input, select, textarea {
+    font-family: var(--font-text) !important;
+    font-variant-numeric: lining-nums tabular-nums;
+  }
+}
+
+.clear-nums {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+  font-variant-numeric: lining-nums tabular-nums !important;
+}
+
+.rounded-organic {
+  border-radius: 28px 28px 28px 8px;
+}
+
+.leaf-card {
+  border: 1px solid rgba(86, 117, 68, 0.18);
+  box-shadow: 0 8px 24px rgba(65, 50, 23, 0.08);
+}
+
+.leaf-card:hover {
+  box-shadow: 0 14px 32px rgba(65, 50, 23, 0.13);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #f5ecd7;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbb482;
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b66b22;
+}

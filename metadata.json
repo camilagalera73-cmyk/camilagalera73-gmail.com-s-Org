@@ -1,0 +1,6 @@
+{
+  "name": "Eco-Quest",
+  "description": "Eco-Quest: Guía de campo interactiva y mapa offline de aves de Villa Mercedes (San Luis). Registrá avistamientos en tus salidas de campo sin conexión.",
+  "requestFramePermissions": ["GEOLOCATION"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

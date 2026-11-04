@@ -1,0 +1,32 @@
+{
+  "id": "/",
+  "name": "Eco-Quest - Guía de Aves de Villa Mercedes",
+  "short_name": "Eco-Quest",
+  "description": "Eco-Quest: Guía de campo interactiva y mapa offline de aves de Villa Mercedes (San Luis).",
+  "lang": "es-AR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#fff9ed",
+  "theme_color": "#263b2b",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

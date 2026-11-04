@@ -1,0 +1,833 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Eco-Quest</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;800&family=Nunito:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* Composición: el mapa del parque a la izquierda (siempre a la vista en pantallas anchas) y el panel de juego a la derecha.
+   En el celular se apilan y las pestañas cambian entre Mapa, Mi diario y Explorador. */
+/* Paleta, repartida en todo el juego:
+   #3D531B verde oliva: barra superior, texto y botones principales
+   #EEE5CA crema: fondo de la página, campos y ventanas
+   #BDBF95 salvia clara: tarjetas
+   #A4AC7C salvia: bordes y separadores
+   #D0B48D arena: pestañas, brújula, fotos y vista previa del personaje
+   #A8582E terracota: llamados a la acción, pestaña activa y flecha de la brújula
+   El modo oscuro usa un verde más profundo solo para el fondo de la página. */
+:root{
+  --bg:#EEE5CA; --surface:#BDBF95; --field:#EEE5CA; --well:#D0B48D; --on-well:#3D531B; --sheet:#EEE5CA;
+  --header:#3D531B; --on-header:#EEE5CA; --ink:#3D531B; --muted:#3D531B; --line:#A4AC7C; --control:#3D531B;
+  --leaf:#3D531B; --on-leaf:#EEE5CA; --label:#A8582E; --on-label:#EEE5CA; --focus:#3D531B; --veil:rgba(61,83,27,.5);
+  --map-red:#A8582E; --map-green:#3D531B; --map-trail:#A8582E; --map-white:#EEE5CA;
+  --shadow:0 2px 0 rgba(61,83,27,.18),0 10px 28px rgba(61,83,27,.16);
+  --font-display:'Baloo 2','Trebuchet MS','Segoe UI',system-ui,sans-serif;
+  --font-body:'Nunito',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#2B3A12; --surface:#3D531B; --field:#2B3A12; --well:#D0B48D; --on-well:#3D531B; --sheet:#3D531B;
+    --header:#3D531B; --on-header:#EEE5CA; --ink:#EEE5CA; --muted:#BDBF95; --line:#A4AC7C; --control:#A4AC7C;
+    --leaf:#EEE5CA; --on-leaf:#3D531B; --label:#A8582E; --on-label:#EEE5CA; --focus:#D0B48D; --veil:rgba(43,58,18,.6);
+    --shadow:0 2px 0 rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.3);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#2B3A12; --surface:#3D531B; --field:#2B3A12; --well:#D0B48D; --on-well:#3D531B; --sheet:#3D531B;
+  --header:#3D531B; --on-header:#EEE5CA; --ink:#EEE5CA; --muted:#BDBF95; --line:#A4AC7C; --control:#A4AC7C;
+  --leaf:#EEE5CA; --on-leaf:#3D531B; --label:#A8582E; --on-label:#EEE5CA; --focus:#D0B48D; --veil:rgba(43,58,18,.6);
+  --shadow:0 2px 0 rgba(0,0,0,.3),0 10px 28px rgba(0,0,0,.3);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.5;
+  padding-block:0 32px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button,input,select,textarea{font:inherit;color:inherit}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;margin:0;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* Cabecera */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 12px;margin-block:12px 4px;max-width:1280px;margin-inline:auto;background:var(--header);color:var(--on-header);border:2px solid var(--line);border-radius:24px}
+.brand{display:flex;align-items:center;gap:8px;font-family:var(--font-display);font-weight:800;font-size:28px;color:var(--on-header);letter-spacing:.2px}
+.logo{width:46px;height:46px;border-radius:50%;border:3px solid var(--on-header);object-fit:cover;background:#f9ee7e;flex:none}
+.top-right{display:flex;align-items:center;gap:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;background:var(--field);color:var(--ink);border:2px solid var(--line);padding:4px 12px;font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.pill .mini{width:26px;height:36px;margin-block:-4px}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--field);color:var(--ink);display:grid;place-items:center;cursor:pointer}
+
+/* Estructura */
+.layout{display:grid;gap:16px;max-width:1280px;margin-inline:auto;grid-template-columns:minmax(0,1fr);grid-template-areas:"tabs" "stage" "pane"}
+.tabs{grid-area:tabs;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--well);border-radius:999px;padding:5px;border:2px solid var(--line)}
+.tab{min-height:44px;border:0;border-radius:999px;background:transparent;font-family:var(--font-display);font-weight:800;font-size:19px;cursor:pointer;color:var(--on-well);display:flex;align-items:center;justify-content:center;gap:6px}
+.tab[aria-selected="true"]{background:var(--label);color:var(--on-label)}
+.count{background:var(--field);color:var(--ink);border:2px solid var(--label);border-radius:999px;font-size:13px;font-weight:800;min-width:24px;padding:0 6px;line-height:20px;text-align:center;font-family:var(--font-body)}
+.stage{grid-area:stage;justify-self:center;width:min(100%,520px)}
+.pane{grid-area:pane;min-width:0;display:grid;gap:16px;align-content:start}
+@media (max-width:899px){
+  .layout[data-view="diary"] .stage,.layout[data-view="hero"] .stage{display:none}
+}
+@media (min-width:900px){
+  .layout{grid-template-columns:max(320px,min(46vw,calc((100vh - 170px)*.7047))) minmax(0,1fr);grid-template-areas:"stage tabs" "stage pane";grid-template-rows:auto 1fr;column-gap:28px;align-items:start}
+  .stage{width:100%}
+  .pane{max-width:760px}
+}
+
+/* Mapa */
+.mapbox{position:relative;aspect-ratio:864/1226;max-width:100%;border-radius:22px;overflow:hidden;box-shadow:var(--shadow);background:#9bd46b}
+.mapbox>img{position:absolute;inset:0;width:100%;height:100%;display:block;object-fit:cover}
+.overlay{position:absolute;inset:0;width:100%;height:100%}
+.stop{cursor:pointer}
+.stop .hit{fill:transparent}
+.stop .halo{fill:none;stroke:var(--map-white);stroke-width:6;opacity:0}
+.stop.now .halo{opacity:1;stroke:var(--map-white)}
+.stop.done .halo{opacity:1;stroke:var(--map-green)}
+.stop .badge{fill:var(--map-white);stroke:var(--map-red);stroke-width:5}
+.stop.done .badge{fill:var(--map-green);stroke:var(--map-white)}
+.stop text{font-family:var(--font-display);font-weight:800;font-size:22px;text-anchor:middle;dominant-baseline:central;fill:var(--map-red);pointer-events:none}
+.stop.done text{fill:var(--map-white)}
+.pulse{fill:none;stroke:var(--map-white);stroke-width:5;opacity:0;transform-box:fill-box;transform-origin:center}
+.stop.now .pulse{opacity:.9}
+@media (prefers-reduced-motion:no-preference){
+  .stop.now .pulse{animation:pulse 1.8s ease-out infinite}
+  @keyframes pulse{from{transform:scale(.8);opacity:.9}to{transform:scale(2.1);opacity:0}}
+}
+.intro{position:absolute;inset:0;background:var(--veil);display:grid;place-items:center;text-align:center;padding:20px}
+.intro-in{display:grid;gap:14px;justify-items:center;transform:translateY(8%)}
+.intro h1{font-size:clamp(40px,11vw,60px);color:var(--map-white);font-weight:800;text-shadow:0 3px 0 rgba(0,0,0,.28)}
+.intro p{color:var(--map-white);font-weight:700;max-width:26ch;text-shadow:0 1px 6px rgba(0,0,0,.45)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:8px 22px;border-radius:999px;border:2px solid transparent;font-family:var(--font-display);font-weight:800;font-size:19px;cursor:pointer;text-align:center}
+.btn.primary{background:var(--leaf);color:var(--on-leaf)}
+.btn.red{background:var(--label);color:var(--on-label)}
+.btn.ghost{background:var(--field);border-color:var(--control);color:var(--ink)}
+.btn.big{min-height:64px;font-size:28px;padding-inline:36px;box-shadow:0 5px 0 rgba(0,0,0,.28)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.warn{background:var(--label);color:var(--on-label)}
+
+/* Tarjetas del panel */
+.card{background:var(--surface);border:2px solid var(--line);border-radius:20px;padding:18px;box-shadow:var(--shadow);display:grid;gap:12px;min-width:0}
+.eyebrow{font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.card h2{font-size:30px}
+.card h3{font-size:22px}
+.muted{color:var(--muted)}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.steps li{border-radius:12px;background:var(--field);border:2px solid var(--line);padding:6px 8px;font-weight:800;font-size:14px;text-align:center;color:var(--muted)}
+.steps li.done{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
+.steps li.now{border-color:var(--label);color:var(--ink);background:var(--field)}
+.meter{height:12px;border-radius:999px;background:var(--well);border:2px solid var(--line);overflow:hidden}
+.meter>i{display:block;height:100%;background:var(--leaf);width:0}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.howto{margin:0;padding-left:22px;display:grid;gap:8px}
+.howto li::marker{font-family:var(--font-display);font-weight:800;color:var(--label)}
+
+/* Brújula */
+.compass-card{grid-template-columns:150px minmax(0,1fr);align-items:center;gap:16px;background:var(--field)}
+@media (max-width:480px){.compass-card{grid-template-columns:1fr;justify-items:center;text-align:center}}
+#compass{width:150px;height:150px;display:block}
+.c-ring{fill:var(--well);stroke:var(--label);stroke-width:6}
+.c-tick{stroke:var(--on-well);stroke-width:1.5}
+.c-tick.major{stroke:var(--on-well);stroke-width:3}
+.c-letter{font-family:var(--font-display);font-weight:800;font-size:16px;fill:var(--on-well);text-anchor:middle;dominant-baseline:central}
+.c-letter.n{fill:var(--on-well)}
+.c-tip{fill:var(--label);stroke:var(--on-well);stroke-width:1.5;stroke-linejoin:round} .c-tail{fill:var(--on-well)} .c-hub{fill:var(--label)}
+.c-status{font-size:14px;min-height:21px}
+
+/* Explorador */
+.hero-grid{display:grid;grid-template-columns:minmax(0,230px) minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:640px){.hero-grid{grid-template-columns:1fr}}
+.hero-prev{border-radius:20px;background:var(--well);color:var(--on-well);border:2px solid var(--line);padding:12px;display:grid;gap:10px;justify-items:center}
+@media (min-width:641px){.hero-prev{position:sticky;top:12px}}
+.hero-prev svg{width:100%;max-width:190px;height:auto}
+.field{display:grid;gap:6px}
+.field label,.opt legend{font-weight:800;font-size:15px;padding:0}
+input[type=text],select,textarea{width:100%;min-height:46px;padding:8px 14px;border-radius:14px;border:2px solid var(--control);background:var(--field);color:var(--ink)}
+textarea{min-height:84px;resize:vertical}
+fieldset.opt{border:0;margin:0;padding:0;display:grid;gap:8px;min-width:0}
+.row{display:flex;flex-wrap:wrap;gap:8px}
+.sw{width:42px;height:42px;border-radius:50%;border:3px solid var(--surface);box-shadow:0 0 0 2px var(--control);cursor:pointer;padding:0}
+.sw[aria-pressed="true"]{box-shadow:0 0 0 4px var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:42px;padding:6px 14px;border-radius:999px;border:2px solid var(--control);background:var(--field);color:var(--ink);font-weight:700;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--leaf);border-color:var(--leaf);color:var(--on-leaf)}
+.chip .dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(0,0,0,.35);flex:none}
+
+/* Diario */
+.diary-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.group{display:grid;gap:10px}
+.group h3{display:flex;align-items:baseline;gap:10px}
+.group h3 small{font-family:var(--font-body);font-weight:700;font-size:14px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px}
+.bird{background:var(--field);color:var(--ink);border:2px solid var(--line);border-radius:18px;overflow:hidden;text-align:left;padding:0;cursor:pointer;display:grid;grid-template-rows:auto 1fr;min-width:0}
+.bird .ph{aspect-ratio:4/3;background:var(--well);display:grid;place-items:center;color:var(--on-well);overflow:hidden}
+.bird .ph img{width:100%;height:100%;object-fit:cover;display:block}
+.bird .ph svg{width:46%;height:auto}
+.bird .bd{padding:10px 12px 12px;display:grid;gap:4px;align-content:start}
+.bird .nm{font-family:var(--font-display);font-weight:800;font-size:20px;line-height:1.1;overflow-wrap:anywhere}
+.bird .meta{font-size:14px;color:var(--muted);overflow-wrap:anywhere}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(0,0,0,.35)}
+.empty{border:3px dashed var(--line);border-radius:20px;padding:28px 18px;text-align:center;display:grid;gap:10px;justify-items:center;color:var(--muted)}
+.empty svg{width:90px;height:auto}
+
+/* Ventanas */
+.modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;background:rgba(43,58,18,.72);
+  padding:max(16px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) max(16px,env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.sheet{background:var(--sheet);color:var(--ink);border-radius:22px;width:min(100%,640px);max-height:100%;overflow:auto;padding:20px;display:grid;gap:14px;box-shadow:var(--shadow)}
+.sheet header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.sheet h2{font-size:28px}
+.photo-row{display:grid;grid-template-columns:minmax(0,170px) minmax(0,1fr);gap:14px;align-items:center}
+@media (max-width:480px){.photo-row{grid-template-columns:1fr}}
+.photo-box{aspect-ratio:4/3;border-radius:16px;background:var(--well);border:2px dashed var(--control);display:grid;place-items:center;overflow:hidden;color:var(--on-well)}
+.photo-box img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-box svg{width:50%;height:auto}
+.err{color:var(--ink);font-weight:800;min-height:24px;border-left:5px solid var(--label);padding-left:10px}
+.err:empty{border:0;padding:0}
+.check{display:flex;align-items:center;gap:10px;font-weight:700}
+.check input{width:22px;height:22px;accent-color:var(--leaf)}
+.sheet .actions{justify-content:space-between}
+.cel{text-align:center;justify-items:center}
+.cel svg.big-hero{width:120px;height:auto}
+.calib{display:grid;gap:8px}
+.calib-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:8px;align-items:center;border:2px solid var(--line);border-radius:14px;padding:8px 10px}
+@media (max-width:480px){.calib-row{grid-template-columns:1fr 1fr}.calib-row>div{grid-column:1/-1}}
+.calib-row small{display:block;color:var(--muted);font-variant-numeric:tabular-nums}
+.btn.small{min-height:40px;font-size:15px;padding:4px 14px}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;max-width:min(92vw,520px);
+  background:var(--ink);color:var(--field);padding:12px 18px;border-radius:16px;font-weight:700;box-shadow:var(--shadow);text-align:center}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+
+<header class="top">
+  <div class="brand">
+    <img class="logo" src="logo-ave.jpg" alt="" width="46" height="46">
+    Eco-Quest
+  </div>
+  <div class="top-right">
+    <span class="pill" id="pillHero" title="Tu explorador"><span class="mini" id="miniHero"></span><span id="pillName">Explorador</span></span>
+    <span class="pill" id="pillStars" aria-label="Estrellas">★ 0</span>
+    <button class="icon-btn" id="btnSettings" aria-label="Ajustes" data-act="settings">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="layout" id="layout" data-view="map">
+  <div class="tabs" role="tablist" aria-label="Secciones del juego">
+    <button class="tab" role="tab" id="tab-map" aria-selected="true" aria-controls="view-map" data-view="map">Mapa</button>
+    <button class="tab" role="tab" id="tab-diary" aria-selected="false" aria-controls="view-diary" data-view="diary">Mi diario <span class="count" id="tabCount">0</span></button>
+    <button class="tab" role="tab" id="tab-hero" aria-selected="false" aria-controls="view-hero" data-view="hero">Explorador</button>
+  </div>
+
+  <section class="stage" aria-label="Mapa del parque">
+    <div class="mapbox" id="mapbox">
+      <img src="mapa-parque.jpg" alt="Mapa ilustrado del parque con el lago, el sendero y tres paradas: la entrada por los espejos de agua, la segunda parada junto al banco y la tercera parada en el puente." width="864" height="1226">
+      <svg class="overlay" viewBox="0 0 864 1226" id="overlay" aria-hidden="false">
+        <polyline id="trail" points="" fill="none" stroke="var(--map-trail)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="0.1 18"/>
+        <g id="stops"></g>
+        <g id="mapHero" transform="translate(417 88)" style="pointer-events:none">
+          <ellipse cx="0" cy="15" rx="20" ry="6" fill="#000" opacity=".22"/>
+          <svg id="mapHeroSvg" x="-30" y="-67" width="60" height="85" viewBox="0 0 120 170" overflow="visible"></svg>
+        </g>
+      </svg>
+      <div class="intro" id="intro">
+        <div class="intro-in">
+          <h1>Eco-Quest</h1>
+          <p>Recorré el parque y armá tu diario de aves</p>
+          <button class="btn red big" data-act="start" id="btnStart">¡Empezar!</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pane">
+    <div id="view-map" role="tabpanel" aria-labelledby="tab-map" style="display:grid;gap:16px">
+      <div class="card" id="missionCard"></div>
+      <div class="card compass-card" id="compassCard">
+        <svg id="compass" viewBox="-70 -70 140 140" role="img" aria-label="Brújula">
+          <circle class="c-ring" r="64"/>
+          <g id="cDial"></g>
+          <g id="cNeedle"><polygon class="c-tip" points="0,-50 -9,0 9,0"/><polygon class="c-tail" points="0,40 -8,0 8,0"/></g>
+          <circle class="c-hub" r="6"/>
+        </svg>
+        <div style="display:grid;gap:8px;min-width:0">
+          <div class="eyebrow">Brújula</div>
+          <h3 id="cText">Hacia la 2da parada</h3>
+          <p class="muted" id="cHint"></p>
+          <div class="actions" style="justify-content:inherit"><button class="btn ghost small" data-act="sensor" id="btnSensor">Usar la brújula del celular</button><button class="btn ghost small" data-act="download" hidden>Descargar el juego</button></div>
+          <p class="c-status muted" id="cStatus" role="status"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="view-diary" role="tabpanel" aria-labelledby="tab-diary" hidden style="display:grid;gap:16px">
+      <div class="diary-head">
+        <div><h2 style="font-size:32px">Mi diario de aves</h2><p class="muted" id="diarySub"></p></div>
+        <button class="btn primary" data-act="new-bird">Nueva ficha</button>
+      </div>
+      <div id="diaryBody" style="display:grid;gap:22px"></div>
+    </div>
+
+    <div id="view-hero" role="tabpanel" aria-labelledby="tab-hero" hidden style="display:grid;gap:16px">
+      <div class="card">
+        <div><div class="eyebrow">Tu personaje</div><h2 id="heroTitle">Armá tu explorador</h2></div>
+        <div class="hero-grid">
+          <div class="hero-prev">
+            <div id="heroPreview" aria-label="Vista previa de tu explorador" role="img"></div>
+            <button class="btn ghost small" data-act="random">¡Sorpresa!</button>
+          </div>
+          <div style="display:grid;gap:16px;min-width:0">
+            <div class="field"><label for="heroName">Nombre de explorador o exploradora</label><input type="text" id="heroName" maxlength="24" autocomplete="off" placeholder="Escribí tu nombre"></div>
+            <fieldset class="opt"><legend>Soy</legend><div class="row" id="optGender"></div></fieldset>
+            <fieldset class="opt"><legend>Color de piel</legend><div class="row" id="optSkin"></div></fieldset>
+            <fieldset class="opt"><legend>Peinado</legend><div class="row" id="optHairStyle"></div></fieldset>
+            <fieldset class="opt"><legend>Color de pelo</legend><div class="row" id="optHairColor"></div></fieldset>
+            <fieldset class="opt"><legend>Ropa de arriba</legend><div class="row" id="optOutfit"></div></fieldset>
+            <fieldset class="opt"><legend>Color de la ropa</legend><div class="row" id="optShirt"></div></fieldset>
+            <fieldset class="opt"><legend>Parte de abajo</legend><div class="row" id="optBottom"></div></fieldset>
+            <fieldset class="opt"><legend>Color de la parte de abajo</legend><div class="row" id="optPants"></div></fieldset>
+            <fieldset class="opt"><legend>Sombrero</legend><div class="row" id="optHat"></div></fieldset>
+            <fieldset class="opt"><legend>Color de sombrero, bufanda y mochila</legend><div class="row" id="optHatColor"></div></fieldset>
+            <fieldset class="opt"><legend>Accesorios</legend><div class="row" id="optAcc"></div></fieldset>
+          </div>
+        </div>
+        <div class="actions"><button class="btn primary" data-act="hero-done">Listo, ir al mapa</button></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- Ficha de ave -->
+<div class="modal" id="fichaModal" hidden role="dialog" aria-modal="true" aria-labelledby="fichaTitle">
+  <form class="sheet" id="fichaForm" novalidate>
+    <header><h2 id="fichaTitle">Ficha de ave</h2><button type="button" class="icon-btn" data-act="close-ficha" aria-label="Cerrar">✕</button></header>
+    <div class="photo-row">
+      <div class="photo-box" id="photoBox"></div>
+      <div style="display:grid;gap:8px;justify-items:start">
+        <button type="button" class="btn ghost small" id="photoBtn">Agregar foto</button>
+        <button type="button" class="btn ghost small" id="photoDel" hidden>Quitar foto</button>
+        <input type="file" id="photoInput" accept="image/*" hidden>
+        <p class="muted" style="font-size:14px">Podés sacarla con la cámara o elegirla de tu galería.</p>
+      </div>
+    </div>
+    <div class="field"><label for="fName">¿Qué ave es?</label>
+      <input type="text" id="fName" list="birdList" maxlength="40" autocomplete="off" placeholder="Ej.: Tero común">
+      <datalist id="birdList"><option value="Tero común"><option value="Hornero"><option value="Cardenal común"><option value="Chingolo"><option value="Paloma doméstica"><option value="Cotorra"><option value="Zorzal colorado"><option value="Benteveo común"><option value="Garza blanca"><option value="Biguá"><option value="Gallareta"><option value="Jilguero dorado"><option value="Calandria grande"><option value="Picaflor común"><option value="Carancho"><option value="Chimango"><option value="Martín pescador"><option value="Cigüeña americana"><option value="Pato barcino"><option value="Gorrión"></datalist>
+      <label class="check"><input type="checkbox" id="fUnknown"> Todavía no sé qué ave es</label>
+    </div>
+    <fieldset class="opt"><legend>Tamaño</legend><div class="row" id="fSize"></div></fieldset>
+    <fieldset class="opt"><legend>Colores que viste</legend><div class="row" id="fColors"></div></fieldset>
+    <fieldset class="opt"><legend>Forma del pico</legend><div class="row" id="fBeak"></div></fieldset>
+    <fieldset class="opt"><legend>¿Qué hacía?</legend><div class="row" id="fDoing"></div></fieldset>
+    <div class="field"><label for="fNotes">Otras características</label><textarea id="fNotes" maxlength="400" placeholder="Cresta, patas, cola, canto, cómo se movía…"></textarea></div>
+    <div class="field"><label for="fStop">¿Dónde la viste?</label>
+      <select id="fStop"></select>
+      <input type="text" id="fWhere" maxlength="80" autocomplete="off" placeholder="Detalle del lugar: sobre una rama, en la orilla, en el agua…" aria-label="Detalle del lugar">
+    </div>
+    <p class="err" id="fErr" role="alert"></p>
+    <div class="actions">
+      <button type="button" class="btn ghost" id="fDelete" hidden data-act="delete-bird">Eliminar</button>
+      <span style="display:flex;gap:10px;flex-wrap:wrap;margin-left:auto">
+        <button type="button" class="btn ghost" data-act="close-ficha">Cancelar</button>
+        <button type="submit" class="btn primary">Guardar ficha</button>
+      </span>
+    </div>
+  </form>
+</div>
+
+<!-- Celebración -->
+<div class="modal" id="celModal" hidden role="dialog" aria-modal="true" aria-labelledby="celTitle">
+  <div class="sheet cel">
+    <div id="celHero"></div>
+    <h2 id="celTitle"></h2>
+    <p id="celText" class="muted"></p>
+    <button class="btn primary" data-act="close-cel" id="celBtn">¡Seguir!</button>
+  </div>
+</div>
+
+<!-- Ajustes -->
+<div class="modal" id="setModal" hidden role="dialog" aria-modal="true" aria-labelledby="setTitle">
+  <div class="sheet">
+    <header><h2 id="setTitle">Ajustes</h2><button type="button" class="icon-btn" data-act="close-set" aria-label="Cerrar">✕</button></header>
+    <div style="display:grid;gap:6px">
+      <h3>Brújula con GPS</h3>
+      <p class="muted">Para docentes y familias. Paráte en cada parada del parque y tocá "Fijar acá". Con las paradas fijadas, la brújula apunta a la parada real y muestra la distancia. Hace falta abrir el juego en el celular y dar permiso de ubicación.</p>
+    </div>
+    <div class="calib" id="calib"></div>
+    <p class="c-status muted" id="calibStatus" role="status"></p>
+    <div style="display:grid;gap:6px" id="dlBox" hidden>
+      <h3>Descargar el juego</h3>
+      <p class="muted">Guardá el juego como un archivo para abrirlo en el celular o subirlo a tu sitio. La brújula del celular y el GPS solo funcionan con el archivo descargado.</p>
+      <div><button class="btn primary" data-act="download">Descargar EcoQuest.html</button></div>
+    </div>
+    <div style="display:grid;gap:6px">
+      <h3>Empezar de nuevo</h3>
+      <p class="muted">Borra el diario, el personaje y el avance de este dispositivo.</p>
+      <div><button class="btn ghost" data-act="reset" id="btnReset">Borrar todo</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+
+<script>
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var REDUCED=false; try{REDUCED=window.matchMedia('(prefers-reduced-motion: reduce)').matches}catch(e){}
+
+/* ---------- Datos del parque ---------- */
+var STOPS=[
+ {short:'Entrada',place:'Espejos de agua, Av. Bélgica',x:417,y:88,badge:[-38,2],
+  tip:'Mirá los espejos de agua sin hacer ruido. ¿Hay aves nadando, caminando en la orilla o volando? Contá cuántas ves antes de anotar.'},
+ {short:'2da parada',place:'Sendero junto al lago, cerca del banco',x:273,y:460,badge:[0,40],
+  tip:'Parate junto al sendero y mirá para todos lados: árboles, arbustos, suelo y agua. Escuchá si hay cantos y fijate de dónde vienen.'},
+ {short:'3ra parada',place:'Puente sobre el lago',x:598,y:1072,badge:[-40,8],
+  tip:'Desde el puente podés mirar el agua desde arriba. Fijate qué hacen las aves: si nadan, si se zambullen, si descansan o si pasan volando.'}
+];
+var EXIT={x:435,y:1226};
+var ROUTE=[[417,88],[330,170],[222,265],[207,298],[273,460],[450,632],[558,656],[720,825],[688,965],[598,1072],[500,1165],[435,1226]];
+var STOP_IDX=[0,4,9,11];
+var NEED=1;
+var cum=[0]; for(var i=1;i<ROUTE.length;i++){cum[i]=cum[i-1]+Math.hypot(ROUTE[i][0]-ROUTE[i-1][0],ROUTE[i][1]-ROUTE[i-1][1]);}
+function heroXY(d){d=Math.max(0,Math.min(d,cum[cum.length-1]));var i=1;while(i<cum.length-1&&cum[i]<d)i++;var t=(d-cum[i-1])/((cum[i]-cum[i-1])||1);
+  return {x:ROUTE[i-1][0]+(ROUTE[i][0]-ROUTE[i-1][0])*t,y:ROUTE[i-1][1]+(ROUTE[i][1]-ROUTE[i-1][1])*t,i:i};}
+function trailPts(d){var p=heroXY(d),pts=[];for(var k=0;k<p.i;k++)pts.push(ROUTE[k][0]+','+ROUTE[k][1]);pts.push(p.x.toFixed(1)+','+p.y.toFixed(1));return pts.join(' ');}
+
+/* ---------- Personaje ---------- */
+var SKIN=[['#f6d3b8','Piel muy clara'],['#e8b98d','Piel clara'],['#c98f63','Piel trigueña'],['#a66a43','Piel morena'],['#7a4a2e','Piel oscura'],['#523020','Piel muy oscura']];
+var HAIR=[['#2b1b12','Negro'],['#6b3f1e','Castaño'],['#b5772f','Cobrizo'],['#e3b44c','Rubio'],['#c4452d','Colorado'],['#8f9aa3','Canoso'],['#3d6fb5','Azul'],['#A8582E','Terracota'],['#D0B48D','Arena'],['#3D531B','Verde oliva'],['#EEE5CA','Crema']];
+var COLORS=[['#d93b30','Rojo'],['#ef8a2a','Naranja'],['#f2c230','Amarillo'],['#2a7d26','Verde'],['#1f9a8a','Turquesa'],['#2b78c9','Azul'],['#7b4fc4','Violeta'],['#e56a9a','Rosa'],['#f4f1ea','Blanco'],['#2c2f33','Negro'],['#3D531B','Verde oliva'],['#A8582E','Terracota'],['#D0B48D','Arena'],['#A4AC7C','Salvia'],['#BDBF95','Salvia clara'],['#EEE5CA','Crema']];
+var PANTS=[['#2f4b7c','Azul marino'],['#3b3b3b','Gris oscuro'],['#7a5a3a','Marrón'],['#4a6b3a','Verde oliva'],['#8a8f96','Gris'],['#b23a48','Bordó'],['#3D531B','Verde oliva'],['#A8582E','Terracota'],['#D0B48D','Arena']];
+var HAIR_STYLES=[['corto','Corto'],['largo','Largo'],['flequillo','Largo con flequillo'],['colitas','Colitas'],['trenzas','Trenzas'],['rodete','Rodete'],['coleta','Coleta'],['rulos','Rulos'],['ninguno','Sin pelo']];
+var OUTFITS=[['remera','Remera'],['buzo','Buzo'],['chaleco','Chaleco']];
+var GENDERS=[['hombre','Hombre'],['mujer','Mujer']];
+var BOTTOMS=[['pantalon','Pantalón'],['short','Short'],['falda','Falda']];
+var HATS=[['ninguno','Sin sombrero'],['gorra','Gorra'],['sombrero','Sombrero'],['gorro','Gorro']];
+var ACCS=[['binoculares','Binoculares'],['anteojos','Anteojos'],['mochila','Mochila'],['camara','Cámara'],['bufanda','Bufanda']];
+function defaultHero(){return {name:'',gender:'hombre',bottom:'pantalon',skin:1,hairStyle:'corto',hairColor:1,outfit:'chaleco',shirt:11,pants:6,hat:'sombrero',hatColor:12,acc:{binoculares:true,anteojos:false,mochila:false,camara:false,bufanda:false}};}
+function shade(hex,f){var n=parseInt(hex.slice(1),16),r=n>>16,g=(n>>8)&255,b=n&255,t=f<0?0:255,p=Math.abs(f);
+  r=Math.round((t-r)*p+r);g=Math.round((t-g)*p+g);b=Math.round((t-b)*p+b);return '#'+((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1);}
+function heroInner(h){
+  var skin=SKIN[h.skin][0],hair=HAIR[h.hairColor][0],shirt=COLORS[h.shirt][0],pants=PANTS[h.pants][0],acc=COLORS[h.hatColor][0],a=h.acc||{},ink='#2a1c14',s='';
+  s+='<ellipse cx="60" cy="163" rx="32" ry="6" fill="#000" opacity=".16"/>';
+  if(a.mochila) s+='<rect x="29" y="76" width="62" height="42" rx="13" fill="'+shade(acc,-.18)+'"/>';
+  if(h.hairStyle==='largo'||h.hairStyle==='flequillo') s+='<rect x="30" y="24" width="60" height="64" rx="26" fill="'+hair+'"/>';
+  var bt=h.bottom||'pantalon',fem=h.gender==='mujer';
+  if(bt==='pantalon') s+='<rect x="43" y="108" width="15" height="44" rx="6" fill="'+pants+'"/><rect x="62" y="108" width="15" height="44" rx="6" fill="'+pants+'"/>';
+  else if(bt==='short') s+='<rect x="43" y="116" width="15" height="36" rx="6" fill="'+skin+'"/><rect x="62" y="116" width="15" height="36" rx="6" fill="'+skin+'"/><rect x="42" y="106" width="17" height="26" rx="7" fill="'+pants+'"/><rect x="61" y="106" width="17" height="26" rx="7" fill="'+pants+'"/>';
+  else s+='<rect x="43" y="112" width="15" height="40" rx="6" fill="'+skin+'"/><rect x="62" y="112" width="15" height="40" rx="6" fill="'+skin+'"/>';
+  s+='<rect x="39" y="147" width="21" height="12" rx="6" fill="#3a2a22"/><rect x="60" y="147" width="21" height="12" rx="6" fill="#3a2a22"/>';
+  s+=fem?'<g transform="translate(60 0) scale(.93 1) translate(-60 0)">':'<g>';
+  if(h.outfit==='remera'){
+    s+='<rect x="24" y="76" width="13" height="38" rx="6.5" fill="'+skin+'"/><rect x="83" y="76" width="13" height="38" rx="6.5" fill="'+skin+'"/>';
+    s+='<rect x="35" y="70" width="50" height="50" rx="14" fill="'+shirt+'"/>';
+    s+='<rect x="21" y="72" width="18" height="20" rx="8" fill="'+shirt+'"/><rect x="81" y="72" width="18" height="20" rx="8" fill="'+shirt+'"/>';
+  } else if(h.outfit==='buzo'){
+    s+='<rect x="22" y="74" width="16" height="42" rx="8" fill="'+shade(shirt,-.1)+'"/><rect x="82" y="74" width="16" height="42" rx="8" fill="'+shade(shirt,-.1)+'"/>';
+    s+='<rect x="35" y="70" width="50" height="50" rx="14" fill="'+shirt+'"/>';
+    s+='<path d="M42 68 Q60 86 78 68 Q78 76 60 90 Q42 76 42 68Z" fill="'+shade(shirt,-.22)+'"/>';
+    s+='<rect x="47" y="102" width="26" height="11" rx="5" fill="'+shade(shirt,-.14)+'"/>';
+  } else {
+    var tan='#EEE5CA';
+    s+='<rect x="22" y="74" width="16" height="42" rx="8" fill="'+tan+'"/><rect x="82" y="74" width="16" height="42" rx="8" fill="'+tan+'"/>';
+    s+='<rect x="35" y="70" width="50" height="50" rx="14" fill="'+tan+'"/>';
+    s+='<path d="M36 76 Q36 70 43 70 L54 70 L54 118 L43 118 Q36 118 36 112Z" fill="'+shirt+'"/><path d="M84 76 Q84 70 77 70 L66 70 L66 118 L77 118 Q84 118 84 112Z" fill="'+shirt+'"/>';
+    s+='<rect x="40" y="96" width="11" height="10" rx="3" fill="'+shade(shirt,-.2)+'"/><rect x="69" y="96" width="11" height="10" rx="3" fill="'+shade(shirt,-.2)+'"/>';
+  }
+  s+='<circle cx="30.5" cy="115" r="7.5" fill="'+skin+'"/><circle cx="89.5" cy="115" r="7.5" fill="'+skin+'"/></g>';
+  if(bt==='falda') s+='<path d="M36 104 L84 104 L94 137 Q60 147 26 137 Z" fill="'+pants+'"/><rect x="36" y="100" width="48" height="8" rx="4" fill="'+shade(pants,-.18)+'"/>';
+  if(a.mochila) s+='<rect x="43" y="71" width="5" height="32" rx="2.5" fill="'+shade(acc,-.3)+'"/><rect x="72" y="71" width="5" height="32" rx="2.5" fill="'+shade(acc,-.3)+'"/>';
+  s+='<rect x="53" y="60" width="14" height="14" rx="4" fill="'+shade(skin,-.1)+'"/>';
+  s+='<circle cx="34" cy="44" r="5.5" fill="'+skin+'"/><circle cx="86" cy="44" r="5.5" fill="'+skin+'"/><circle cx="60" cy="42" r="26" fill="'+skin+'"/>';
+  var cap='<path d="M33 40 C32 16 48 12 60 12 C74 12 88 17 87 40 C82 29 72 27 60 27 C48 27 38 29 33 40Z" fill="'+hair+'"/>';
+  var hs=h.hairStyle,tie='#A8582E';
+  if(hs==='corto'||hs==='largo') s+=cap;
+  else if(hs==='flequillo') s+=cap+'<path d="M34 41 C33 21 87 21 86 41 C80 30 70 37 60 31 C50 37 40 30 34 41Z" fill="'+hair+'"/>';
+  else if(hs==='colitas') s+=cap+'<path d="M36 34 C16 33 12 58 21 72 C23 56 30 47 38 42Z" fill="'+hair+'"/><path d="M84 34 C104 33 108 58 99 72 C97 56 90 47 82 42Z" fill="'+hair+'"/><circle cx="35" cy="37" r="4.5" fill="'+tie+'"/><circle cx="85" cy="37" r="4.5" fill="'+tie+'"/>';
+  else if(hs==='trenzas') s+=cap+'<g fill="'+hair+'"><ellipse cx="29" cy="56" rx="6.5" ry="8"/><ellipse cx="30" cy="69" rx="6.5" ry="8"/><ellipse cx="29" cy="82" rx="6.5" ry="8"/><ellipse cx="30" cy="95" rx="6.5" ry="8"/><ellipse cx="91" cy="56" rx="6.5" ry="8"/><ellipse cx="90" cy="69" rx="6.5" ry="8"/><ellipse cx="91" cy="82" rx="6.5" ry="8"/><ellipse cx="90" cy="95" rx="6.5" ry="8"/></g><circle cx="30" cy="106" r="4.5" fill="'+tie+'"/><circle cx="90" cy="106" r="4.5" fill="'+tie+'"/>';
+  else if(hs==='rodete') s+=cap+'<circle cx="60" cy="9" r="11" fill="'+hair+'"/><rect x="51" y="15" width="18" height="5" rx="2.5" fill="'+tie+'"/>';
+  else if(h.hairStyle==='coleta') s+=cap+'<path d="M84 32 C106 30 108 62 96 72 C98 56 92 46 84 42Z" fill="'+hair+'"/><circle cx="85" cy="35" r="4" fill="#A8582E"/>';
+  else if(h.hairStyle==='rulos') s+='<g fill="'+hair+'"><circle cx="34" cy="38" r="10"/><circle cx="38" cy="24" r="11"/><circle cx="50" cy="16" r="11"/><circle cx="64" cy="14" r="11"/><circle cx="77" cy="18" r="11"/><circle cx="85" cy="30" r="11"/><circle cx="88" cy="42" r="9"/></g>';
+  s+='<circle cx="50" cy="44" r="3.2" fill="'+ink+'"/><circle cx="70" cy="44" r="3.2" fill="'+ink+'"/><circle cx="51" cy="43" r="1" fill="#fff"/><circle cx="71" cy="43" r="1" fill="#fff"/>';
+  if(fem) s+='<path d="M46.5 41.5 L43.5 39.5 M47.5 40.5 L46 37.5 M73.5 41.5 L76.5 39.5 M72.5 40.5 L74 37.5" stroke="'+ink+'" stroke-width="1.9" stroke-linecap="round" fill="none"/>';
+  s+='<path d="M52 55 Q60 62 68 55" stroke="'+ink+'" stroke-width="2.6" fill="none" stroke-linecap="round"/><circle cx="45" cy="52" r="4" fill="#ff8f8f" opacity=".35"/><circle cx="75" cy="52" r="4" fill="#ff8f8f" opacity=".35"/>';
+  if(a.anteojos) s+='<g fill="rgba(255,255,255,.28)" stroke="#2c2f33" stroke-width="2.4"><circle cx="50" cy="44" r="8.5"/><circle cx="70" cy="44" r="8.5"/></g><path d="M58.5 44h3" stroke="#2c2f33" stroke-width="2.4"/>';
+  if(h.hat==='gorra') s+='<path d="M33 34 Q34 11 60 11 Q86 11 87 34Z" fill="'+acc+'"/><rect x="29" y="30" width="62" height="8" rx="4" fill="'+shade(acc,-.25)+'"/>';
+  else if(h.hat==='sombrero') s+='<ellipse cx="60" cy="30" rx="46" ry="9" fill="'+shade(acc,-.12)+'"/><path d="M40 30 Q40 5 60 5 Q80 5 80 30Z" fill="'+acc+'"/><rect x="40" y="21" width="40" height="7" fill="'+shade(acc,-.3)+'"/>';
+  else if(h.hat==='gorro') s+='<path d="M33 36 Q33 8 60 8 Q87 8 87 36Z" fill="'+acc+'"/><rect x="31" y="29" width="58" height="11" rx="5.5" fill="'+shade(acc,-.25)+'"/><circle cx="60" cy="7" r="6" fill="'+shade(acc,.25)+'"/>';
+  if(a.bufanda) s+='<rect x="42" y="63" width="36" height="11" rx="5.5" fill="'+acc+'"/><rect x="66" y="69" width="10" height="26" rx="4" fill="'+shade(acc,-.12)+'"/>';
+  if(a.binoculares) s+='<path d="M47 70 Q60 100 73 70" stroke="#3a2a22" stroke-width="3" fill="none"/><rect x="47" y="90" width="12" height="17" rx="4.5" fill="#2e3a44"/><rect x="61" y="90" width="12" height="17" rx="4.5" fill="#2e3a44"/><rect x="58" y="94" width="4" height="6" fill="#2e3a44"/><ellipse cx="53" cy="107" rx="5" ry="2.6" fill="#7cc6e8"/><ellipse cx="67" cy="107" rx="5" ry="2.6" fill="#7cc6e8"/>';
+  if(a.camara) s+='<rect x="76" y="100" width="22" height="15" rx="3.5" fill="#3b3b3b"/><rect x="82" y="97" width="9" height="4" rx="1.5" fill="#3b3b3b"/><circle cx="87" cy="108" r="5" fill="#9fd3ee" stroke="#222" stroke-width="1.5"/>';
+  return s;
+}
+function heroSVG(h,cls){return '<svg viewBox="0 0 120 170" '+(cls?'class="'+cls+'" ':'')+'aria-hidden="true">'+heroInner(h)+'</svg>';}
+var BIRD_ICON='<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M6 38c8-2 12-10 18-14 6-4 14-2 18 4l12-6-8 12c0 12-10 22-24 22-10 0-16-8-16-18z" fill="currentColor" opacity=".55"/><circle cx="43" cy="26" r="2.6" fill="var(--well)"/></svg>';
+
+/* ---------- Estado ---------- */
+var KEY='ecoquest-v1',warned=false;
+function load(){var d={};try{d=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){d={}}
+  var s={started:!!d.started,level:Math.max(0,Math.min(3,d.level|0)),hero:defaultHero(),birds:[],coords:[null,null,null]};
+  if(d.hero){var base=defaultHero();s.hero=Object.assign(base,d.hero);s.hero.acc=Object.assign(defaultHero().acc,d.hero.acc||{});}
+  if(Array.isArray(d.birds))s.birds=d.birds;
+  if(Array.isArray(d.coords)&&d.coords.length===3)s.coords=d.coords;
+  return s;}
+var S=load();
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){if(!warned){warned=true;toast('No pude guardar en este dispositivo. Tu diario se mantiene mientras no cierres la página.');}}}
+function score(b){return 10+(b.photo?5:0)+((b.size||b.beak||(b.colors&&b.colors.length)||(b.doing&&b.doing.length)||(b.notes&&b.notes.trim()))?5:0)+((b.where&&b.where.trim())?5:0);}
+function stars(){return S.birds.reduce(function(a,b){return a+score(b)},0)+10*Math.min(S.level,3);}
+function birdsAt(i){return S.birds.filter(function(b){return b.stop===i}).length;}
+var heroDist=cum[STOP_IDX[S.level]],walking=false,view='map';
+
+/* ---------- Avisos y ventanas ---------- */
+var toastT=null;
+function toast(msg){var t=$('#toast');t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(function(){t.hidden=true},4200);}
+var lastFocus=null,openModalEl=null;
+function openModal(el,focusSel){lastFocus=document.activeElement;el.hidden=false;openModalEl=el;var f=focusSel?$(focusSel,el):null;(f||$('button,input,select,textarea',el)).focus();}
+function closeModal(el){el.hidden=true;if(openModalEl===el)openModalEl=null;if(lastFocus&&lastFocus.focus)try{lastFocus.focus()}catch(e){}}
+document.addEventListener('keydown',function(e){
+  if(!openModalEl)return;
+  if(e.key==='Escape'){closeModal(openModalEl);return;}
+  if(e.key==='Tab'){var f=$$('button:not([hidden]):not([disabled]),input:not([hidden]):not([disabled]),select,textarea',openModalEl).filter(function(n){return n.offsetParent!==null});
+    if(!f.length)return;var first=f[0],last=f[f.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}}
+});
+
+/* ---------- Brújula ---------- */
+var rad=function(d){return d*Math.PI/180},dg=function(r){return r*180/Math.PI};
+function mapBearing(a,b){return (dg(Math.atan2(b.x-a.x,-(b.y-a.y)))+360)%360;}
+function geoBearing(a,b){var y=Math.sin(rad(b.lon-a.lon))*Math.cos(rad(b.lat)),x=Math.cos(rad(a.lat))*Math.sin(rad(b.lat))-Math.sin(rad(a.lat))*Math.cos(rad(b.lat))*Math.cos(rad(b.lon-a.lon));return (dg(Math.atan2(y,x))+360)%360;}
+function haversine(a,b){var R=6371000,dLat=rad(b.lat-a.lat),dLon=rad(b.lon-a.lon),h=Math.pow(Math.sin(dLat/2),2)+Math.cos(rad(a.lat))*Math.cos(rad(b.lat))*Math.pow(Math.sin(dLon/2),2);return 2*R*Math.asin(Math.sqrt(h));}
+var CARD=['Norte','Noreste','Este','Sudeste','Sur','Sudoeste','Oeste','Noroeste'];
+function cardinal(b){return CARD[Math.round(b/45)%8];}
+function buildDial(){var s='';for(var k=0;k<36;k++){var major=k%9===0,r1=major?50:55,a=rad(k*10);
+  s+='<line class="c-tick'+(major?' major':'')+'" x1="'+(Math.sin(a)*r1).toFixed(1)+'" y1="'+(-Math.cos(a)*r1).toFixed(1)+'" x2="'+(Math.sin(a)*60).toFixed(1)+'" y2="'+(-Math.cos(a)*60).toFixed(1)+'"/>';}
+  s+='<text class="c-letter n" x="0" y="-38">N</text><text class="c-letter" x="38" y="0">E</text><text class="c-letter" x="0" y="38">S</text><text class="c-letter" x="-38" y="0">O</text>';
+  $('#cDial').innerHTML=s;}
+var heading=null,gpsPos=null,needleDeg=0,dialDeg=0,needleT=0,dialT=0,loopOn=false;
+function turn(cur,t){return cur+((((t-cur)%360)+540)%360-180);}
+function paintCompass(){$('#cNeedle').setAttribute('transform','rotate('+needleDeg.toFixed(1)+')');$('#cDial').setAttribute('transform','rotate('+dialDeg.toFixed(1)+')');}
+function tick(){needleDeg+=(needleT-needleDeg)*.2;dialDeg+=(dialT-dialDeg)*.2;paintCompass();
+  if(Math.abs(needleT-needleDeg)>.2||Math.abs(dialT-dialDeg)>.2)requestAnimationFrame(tick);else{needleDeg=needleT;dialDeg=dialT;paintCompass();loopOn=false;}}
+function setTargets(n,d){needleT=turn(needleDeg,n);dialT=turn(dialDeg,d);if(REDUCED){needleDeg=needleT;dialDeg=dialT;paintCompass();}else if(!loopOn){loopOn=true;requestAnimationFrame(tick);}}
+function targetInfo(){if(S.level===0)return {x:STOPS[1].x,y:STOPS[1].y,label:'la '+STOPS[1].short,ci:1};
+  if(S.level===1)return {x:STOPS[2].x,y:STOPS[2].y,label:'la '+STOPS[2].short,ci:2};
+  if(S.level===2)return {x:EXIT.x,y:EXIT.y,label:'la salida del recorrido',ci:null};return null;}
+function updateCompass(){
+  var t=targetInfo(),needle=$('#cNeedle');
+  if(!t){$('#cText').textContent='¡Recorrido completo!';$('#cHint').textContent='Ya pasaste por las tres paradas. Podés volver a recorrerlo cuando quieras.';needle.style.opacity='.3';return;}
+  needle.style.opacity='1';
+  var p=heroXY(heroDist),bearing=mapBearing(p,t),dist=null,usingGps=false;
+  if(gpsPos&&t.ci!=null&&S.coords[t.ci]){bearing=geoBearing(gpsPos,S.coords[t.ci]);dist=haversine(gpsPos,S.coords[t.ci]);usingGps=true;}
+  var h=heading==null?0:heading;
+  setTargets(bearing-h,-h);
+  var txt='Hacia '+t.label+', rumbo '+cardinal(bearing);
+  if(dist!=null)txt+=' · a '+(dist>=1000?(dist/1000).toFixed(1)+' km':Math.round(dist)+' m');
+  $('#cText').textContent=txt;
+  $('#cHint').textContent=heading!=null?'Girá despacio hasta que la flecha roja apunte hacia arriba. Ahí está tu próxima parada.':'La flecha roja muestra hacia dónde queda la próxima parada en el mapa. El Norte está arriba.';
+  $('#cStatus').dataset.gps=usingGps?'1':'';
+}
+function setSensorStatus(t){$('#cStatus').textContent=t;}
+var sensorOn=false,sensorTimer=null;
+function onOrient(e){var v=null;
+  if(typeof e.webkitCompassHeading==='number')v=e.webkitCompassHeading;
+  else if((e.absolute||e.type==='deviceorientationabsolute')&&typeof e.alpha==='number')v=(360-e.alpha)%360;
+  if(v==null)return;heading=v;if(!sensorOn){sensorOn=true;setSensorStatus('Brújula del celular activada.');$('#btnSensor').textContent='Brújula del celular activa';}
+  updateCompass();}
+function startGps(){
+  if(!navigator.geolocation)return;
+  try{navigator.geolocation.watchPosition(function(p){gpsPos={lat:p.coords.latitude,lon:p.coords.longitude};updateCompass();},function(){},{enableHighAccuracy:true,maximumAge:3000,timeout:15000});}catch(e){}
+}
+async function enableSensors(){
+  setSensorStatus('Pidiendo permiso…');
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      var r=await DeviceOrientationEvent.requestPermission();
+      if(r!=='granted'){setSensorStatus('No diste permiso para usar la brújula. Seguís con la brújula del mapa.');return;}
+    }
+    window.addEventListener('deviceorientationabsolute',onOrient,true);
+    window.addEventListener('deviceorientation',onOrient,true);
+  }catch(e){setSensorStatus('Este dispositivo no permite usar la brújula. Seguís con la brújula del mapa.');return;}
+  startGps();
+  clearTimeout(sensorTimer);
+  sensorTimer=setTimeout(function(){if(!sensorOn)setSensorStatus('No llegan datos de la brújula en esta vista. Abrí el juego en el celular desde el navegador. Mientras tanto sigue la brújula del mapa.');},2800);
+}
+
+/* ---------- Mapa ---------- */
+function buildStops(){
+  var g=$('#stops'),h='';
+  STOPS.forEach(function(s,i){
+    h+='<g class="stop" data-i="'+i+'" role="button" tabindex="0" aria-label="'+esc(s.short+': '+s.place)+'">'
+     +'<circle class="pulse" cx="'+s.x+'" cy="'+s.y+'" r="20"/><circle class="halo" cx="'+s.x+'" cy="'+s.y+'" r="22"/>'
+     +'<circle class="hit" cx="'+s.x+'" cy="'+s.y+'" r="38"/>'
+     +'<g><circle class="badge" cx="'+(s.x+s.badge[0])+'" cy="'+(s.y+s.badge[1])+'" r="19"/><text x="'+(s.x+s.badge[0])+'" y="'+(s.y+s.badge[1]+1)+'">'+(i+1)+'</text></g></g>';
+  });
+  g.innerHTML=h;
+}
+function renderStops(){
+  $$('#stops .stop').forEach(function(n){var i=+n.dataset.i;
+    n.classList.toggle('done',S.level>i);n.classList.toggle('now',S.level===i);
+    var t=n.querySelector('text');t.textContent=S.level>i?'✓':String(i+1);});
+}
+function placeHero(bob){var p=heroXY(heroDist);$('#mapHero').setAttribute('transform','translate('+p.x.toFixed(1)+' '+(p.y+(bob||0)).toFixed(1)+')');$('#trail').setAttribute('points',trailPts(heroDist));}
+function walkTo(toD,cb){
+  var from=heroDist,len=Math.abs(toD-from),dur=REDUCED?0:Math.max(1500,len/0.19);
+  if(!dur){heroDist=toD;placeHero(0);updateCompass();cb();return;}
+  var t0=performance.now();
+  (function step(now){var k=Math.min(1,(now-t0)/dur),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    heroDist=from+(toD-from)*e;placeHero(k<1?-Math.abs(Math.sin((now-t0)/90))*5:0);updateCompass();
+    if(k<1)requestAnimationFrame(step);else cb();})(t0);
+}
+function advance(){
+  if(walking||S.level>2)return;var L=S.level;
+  if(birdsAt(L)<NEED){toast('Primero completá una ficha de ave en esta parada.');return;}
+  walking=true;renderMission();
+  walkTo(cum[STOP_IDX[L+1]],function(){walking=false;S.level=L+1;save();heroDist=cum[STOP_IDX[S.level]];renderAll();celebrate();});
+}
+function celebrate(){
+  var L=S.level,n=S.birds.length;
+  $('#celHero').innerHTML=heroSVG(S.hero,'big-hero');
+  if(L>=3){$('#celTitle').textContent='¡Completaste el recorrido!';$('#celText').textContent='Anotaste '+n+(n===1?' ave':' aves')+' y juntaste '+stars()+' estrellas. Tu diario te espera.';$('#celBtn').textContent='Ver mi diario';$('#celBtn').dataset.go='diary';}
+  else{$('#celTitle').textContent='¡Llegaste a la '+STOPS[L].short+'!';$('#celText').textContent='Nivel '+(L+1)+' de 3. Sumaste 10 estrellas. Mirá alrededor y anotá lo que veas.';$('#celBtn').textContent='¡Seguir!';$('#celBtn').dataset.go='';}
+  openModal($('#celModal'),'#celBtn');
+}
+
+/* ---------- Panel: misión ---------- */
+function renderMission(){
+  var el=$('#missionCard'),L=S.level,name=(S.hero.name||'').trim(),h='';
+  if(!S.started){
+    h='<div class="eyebrow">Cómo se juega</div><h2>Un recorrido, tres paradas</h2>'
+     +'<ol class="howto"><li>Armá tu explorador o exploradora con la ropa y los accesorios que quieras.</li><li>Caminá hasta cada parada del parque.</li><li>En cada parada anotá un ave en tu diario: foto, nombre, cómo es y dónde la viste.</li><li>Con la ficha lista pasás al siguiente nivel. La brújula te muestra hacia dónde ir.</li></ol>'
+     +'<div class="actions"><button class="btn red" data-act="start">¡Empezar!</button></div>';
+  } else if(L>2){
+    h='<div class="eyebrow">Recorrido completo</div><h2>'+(name?'¡Bien hecho, '+esc(name)+'!':'¡Bien hecho!')+'</h2>'
+     +'<p>Anotaste <strong>'+S.birds.length+'</strong> '+(S.birds.length===1?'ave':'aves')+' y juntaste <strong>'+stars()+'</strong> estrellas.</p>'
+     +'<div class="actions"><button class="btn primary" data-act="go-diary">Ver mi diario</button><button class="btn ghost" data-act="replay">Recorrer otra vez</button></div>'
+     +'<p class="muted">Al recorrer otra vez conservás todas tus fichas.</p>';
+  } else {
+    var n=birdsAt(L),ok=n>=NEED,s=STOPS[L];
+    h='<div class="eyebrow">Nivel '+(L+1)+' de 3'+(name?' · '+esc(name):'')+'</div>'
+     +'<ol class="steps" aria-label="Avance del recorrido">'+STOPS.map(function(x,i){return '<li class="'+(i<L?'done':i===L?'now':'')+'">'+(i<L?'✓ ':'')+esc(x.short)+'</li>'}).join('')+'</ol>'
+     +'<div><h2>'+esc(s.short)+'</h2><p class="muted">'+esc(s.place)+'</p></div>'
+     +'<p>'+esc(s.tip)+'</p>'
+     +'<div style="display:grid;gap:6px"><div style="display:flex;justify-content:space-between;font-weight:800"><span>Fichas en esta parada</span><span>'+Math.min(n,NEED)+' / '+NEED+'</span></div><div class="meter"><i style="width:'+Math.min(100,n/NEED*100)+'%"></i></div></div>'
+     +'<div class="actions"><button class="btn primary" data-act="new-bird"'+(walking?' disabled':'')+'>Anotar un ave</button>'
+     +'<button class="btn '+(ok?'red':'ghost')+'" data-act="advance"'+((!ok||walking)?' disabled':'')+'>'+(walking?'Caminando…':(L<2?'Ir a la '+STOPS[L+1].short+' →':'Terminar el recorrido →'))+'</button></div>'
+     +(ok?'':'<p class="muted">Completá una ficha para poder avanzar.</p>');
+  }
+  el.innerHTML=h;
+}
+
+/* ---------- Diario ---------- */
+function dotsHtml(cols){return '<span class="dots">'+(cols||[]).map(function(c){var f=BCOL.filter(function(x){return x[1]===c})[0];return f?'<i title="'+esc(c)+'" style="background:'+f[0]+'"></i>':''}).join('')+'</span>';}
+function fmtDate(iso){try{return new Date(iso).toLocaleDateString('es-AR',{day:'numeric',month:'short'})}catch(e){return ''}}
+function renderDiary(){
+  var n=S.birds.length;
+  $('#diarySub').textContent=n?(n+(n===1?' ave anotada':' aves anotadas')+' · '+stars()+' estrellas'):'Todavía no anotaste ninguna ave.';
+  $('#tabCount').textContent=n;$('#tabCount').hidden=!n;
+  var body=$('#diaryBody');
+  if(!n){body.innerHTML='<div class="empty">'+BIRD_ICON+'<h3 style="color:var(--ink)">Tu primera ave va acá</h3><p>Cuando veas un ave en el parque, tocá "Nueva ficha" y anotá cómo es y dónde estaba.</p></div>';return;}
+  var h='';
+  STOPS.forEach(function(s,i){
+    var list=S.birds.filter(function(b){return b.stop===i}).sort(function(a,b){return a.date<b.date?1:-1});
+    if(!list.length)return;
+    h+='<section class="group"><h3>'+esc(s.short)+' <small>'+list.length+(list.length===1?' ave':' aves')+'</small></h3><div class="grid">'
+     +list.map(function(b){
+        var nm=b.unknown?'Ave sin identificar':(b.name||'Ave sin nombre');
+        var bits=[];if(b.size)bits.push(b.size);if(b.doing&&b.doing.length)bits.push(b.doing.join(', '));
+        return '<button class="bird" data-act="open-bird" data-id="'+esc(b.id)+'"><div class="ph">'+(b.photo?'<img alt="Foto de '+esc(nm)+'" src="'+b.photo+'">':BIRD_ICON)+'</div>'
+         +'<div class="bd"><span class="nm">'+esc(nm)+'</span>'+dotsHtml(b.colors)+'<span class="meta">'+esc(bits.join(' · '))+'</span><span class="meta">'+esc(b.where||s.place)+' · '+esc(fmtDate(b.date))+'</span></div></button>';}).join('')
+     +'</div></section>';
+  });
+  body.innerHTML=h;
+}
+
+/* ---------- Ficha ---------- */
+var BCOL=[['#1d1d1f','Negro'],['#f6f6f2','Blanco'],['#8d949b','Gris'],['#8a5a36','Marrón'],['#d03a2e','Rojo'],['#f1c232','Amarillo'],['#5aa845','Verde'],['#3a7bc8','Azul'],['#ef8a2a','Naranja']];
+var SIZES=[['Chico','Chico, como un gorrión'],['Mediano','Mediano, como una paloma'],['Grande','Grande, como una garza']];
+var BEAKS=[['Corto y fuerte','Corto y fuerte'],['Largo y fino','Largo y fino'],['Curvo','Curvo'],['Ancho y plano','Ancho y plano']];
+var DOING=['Nadaba','Volaba','Caminaba','Comía','Cantaba','Estaba posada','Se zambullía'];
+var F={id:null,photo:null,size:'',beak:'',colors:[],doing:[]};
+function chipBtn(label,pressed,extra){return '<button type="button" class="chip" aria-pressed="'+(pressed?'true':'false')+'" '+extra+'>'+label+'</button>';}
+function renderFichaChips(){
+  $('#fSize').innerHTML=SIZES.map(function(x){return chipBtn(esc(x[1]),F.size===x[0],'data-g="size" data-v="'+esc(x[0])+'"')}).join('');
+  $('#fBeak').innerHTML=BEAKS.map(function(x){return chipBtn(esc(x[1]),F.beak===x[0],'data-g="beak" data-v="'+esc(x[0])+'"')}).join('');
+  $('#fColors').innerHTML=BCOL.map(function(x){return chipBtn('<span class="dot" style="background:'+x[0]+'"></span>'+esc(x[1]),F.colors.indexOf(x[1])>-1,'data-g="colors" data-v="'+esc(x[1])+'"')}).join('');
+  $('#fDoing').innerHTML=DOING.map(function(x){return chipBtn(esc(x),F.doing.indexOf(x)>-1,'data-g="doing" data-v="'+esc(x)+'"')}).join('');
+}
+function renderPhoto(){var box=$('#photoBox');box.innerHTML=F.photo?'<img alt="Foto del ave" src="'+F.photo+'">':BIRD_ICON;$('#photoDel').hidden=!F.photo;$('#photoBtn').textContent=F.photo?'Cambiar foto':'Agregar foto';}
+function openFicha(id,stop){
+  var b=id?S.birds.filter(function(x){return x.id===id})[0]:null;
+  F={id:b?b.id:null,photo:b?b.photo:null,size:b?b.size||'':'',beak:b?b.beak||'':'',colors:b?(b.colors||[]).slice():[],doing:b?(b.doing||[]).slice():[]};
+  $('#fichaTitle').textContent=b?'Editar ficha':'Ficha de ave nueva';
+  $('#fName').value=b?(b.name||''):'';$('#fUnknown').checked=b?!!b.unknown:false;$('#fNotes').value=b?(b.notes||''):'';
+  var sel=$('#fStop');sel.innerHTML=STOPS.map(function(s,i){return '<option value="'+i+'">'+esc(s.short+' · '+s.place)+'</option>'}).join('');
+  sel.value=String(b?b.stop:(stop!=null?stop:Math.min(S.level,2)));
+  $('#fWhere').value=b?(b.where||''):'';$('#fErr').textContent='';
+  var del=$('#fDelete');del.hidden=!b;del.textContent='Eliminar';del.dataset.sure='';
+  renderFichaChips();renderPhoto();openModal($('#fichaModal'),'#fName');
+}
+function fileToDataURL(file){return new Promise(function(res,rej){var fr=new FileReader();fr.onerror=function(){rej(new Error('read'))};
+  fr.onload=function(){var img=new Image();img.onerror=function(){rej(new Error('img'))};
+    img.onload=function(){var k=Math.min(1,720/Math.max(img.width,img.height)),w=Math.round(img.width*k),h=Math.round(img.height*k),c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(img,0,0,w,h);res(c.toDataURL('image/jpeg',.72));};
+    img.src=fr.result;};fr.readAsDataURL(file);});}
+function saveFicha(e){
+  e.preventDefault();
+  var name=$('#fName').value.trim(),unknown=$('#fUnknown').checked;
+  if(!name&&!unknown){$('#fErr').textContent='Escribí qué ave es o marcá "Todavía no sé qué ave es".';$('#fName').focus();return;}
+  var isNew=!F.id,stop=+$('#fStop').value;
+  var bird={id:F.id||(Date.now().toString(36)+Math.random().toString(36).slice(2,6)),name:name,unknown:unknown&&!name,size:F.size,beak:F.beak,colors:F.colors.slice(),doing:F.doing.slice(),notes:$('#fNotes').value.trim(),stop:stop,where:$('#fWhere').value.trim(),photo:F.photo,date:new Date().toISOString()};
+  if(isNew){S.birds.push(bird);}else{S.birds=S.birds.map(function(x){if(x.id!==bird.id)return x;bird.date=x.date;return bird;});}
+  save();closeModal($('#fichaModal'));renderAll();
+  if(isNew){var okNow=birdsAt(S.level)>=NEED&&stop===S.level&&S.level<=2;
+    toast('¡Ficha guardada! +'+score(bird)+' estrellas'+(okNow&&birdsAt(S.level)===NEED?'. Ya podés avanzar.':''));}
+  else toast('Ficha actualizada.');
+}
+
+/* ---------- Explorador ---------- */
+function swatches(id,arr,key){var el=$('#'+id);el.innerHTML=arr.map(function(c,i){return '<button type="button" class="sw" style="background:'+c[0]+'" aria-label="'+esc(c[1])+'" aria-pressed="false" data-k="'+key+'" data-v="'+i+'"></button>'}).join('');}
+function segs(id,arr,key){var el=$('#'+id);el.innerHTML=arr.map(function(c){return '<button type="button" class="chip" aria-pressed="false" data-k="'+key+'" data-v="'+c[0]+'">'+esc(c[1])+'</button>'}).join('');}
+function buildHeroEditor(){
+  segs('optGender',GENDERS,'gender');segs('optBottom',BOTTOMS,'bottom');
+  swatches('optSkin',SKIN,'skin');segs('optHairStyle',HAIR_STYLES,'hairStyle');swatches('optHairColor',HAIR,'hairColor');
+  segs('optOutfit',OUTFITS,'outfit');swatches('optShirt',COLORS,'shirt');swatches('optPants',PANTS,'pants');
+  segs('optHat',HATS,'hat');swatches('optHatColor',COLORS,'hatColor');
+  $('#optAcc').innerHTML=ACCS.map(function(a){return '<button type="button" class="chip" aria-pressed="false" data-acc="'+a[0]+'">'+esc(a[1])+'</button>'}).join('');
+}
+function heroLabel(){return S.hero.gender==='mujer'?'Exploradora':'Explorador';}
+function syncHero(){
+  var h=S.hero;
+  $$('#view-hero [data-k]').forEach(function(b){var v=h[b.dataset.k];b.setAttribute('aria-pressed',String(v)===b.dataset.v?'true':'false');});
+  $$('#view-hero [data-acc]').forEach(function(b){b.setAttribute('aria-pressed',h.acc[b.dataset.acc]?'true':'false');});
+  $('#heroPreview').innerHTML=heroSVG(h);
+  $('#miniHero').innerHTML=heroSVG(h,'mini');
+  $('#mapHeroSvg').innerHTML=heroInner(h);
+  $('#pillName').textContent=(h.name||'').trim()||heroLabel();
+  $('#heroTitle').textContent='Armá tu '+heroLabel().toLowerCase();$('#tab-hero').textContent=heroLabel();
+}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+function randomHero(){var h=S.hero;h.skin=Math.floor(Math.random()*SKIN.length);h.hairStyle=pick(HAIR_STYLES)[0];h.hairColor=Math.floor(Math.random()*HAIR.length);h.outfit=pick(OUTFITS)[0];h.shirt=Math.floor(Math.random()*COLORS.length);h.pants=Math.floor(Math.random()*PANTS.length);h.bottom=pick(BOTTOMS)[0];h.hat=pick(HATS)[0];h.hatColor=Math.floor(Math.random()*COLORS.length);
+  ACCS.forEach(function(a){h.acc[a[0]]=Math.random()<.4;});h.acc.binoculares=true;save();syncHero();renderMission();}
+
+/* ---------- Ajustes ---------- */
+function renderCalib(){
+  $('#calib').innerHTML=STOPS.map(function(s,i){var c=S.coords[i];
+    return '<div class="calib-row"><div><strong>'+esc(s.short)+'</strong><small>'+(c?c.lat.toFixed(5)+', '+c.lon.toFixed(5):'Sin fijar')+'</small></div>'
+     +'<button class="btn ghost small" data-act="calib-set" data-i="'+i+'">Fijar acá</button><button class="btn ghost small" data-act="calib-clear" data-i="'+i+'"'+(c?'':' disabled')+'>Borrar</button></div>';}).join('');
+}
+function calibSet(i){
+  var st=$('#calibStatus');
+  if(!navigator.geolocation){st.textContent='Este dispositivo no tiene ubicación disponible.';return;}
+  st.textContent='Buscando tu ubicación…';
+  try{navigator.geolocation.getCurrentPosition(function(p){S.coords[i]={lat:p.coords.latitude,lon:p.coords.longitude};save();renderCalib();st.textContent='Parada fijada: '+STOPS[i].short+'.';updateCompass();},
+    function(){st.textContent='No pude obtener la ubicación. Revisá el permiso de ubicación y probá abrir el juego en el celular.';},{enableHighAccuracy:true,timeout:15000});}
+  catch(e){st.textContent='No pude obtener la ubicación en esta vista.';}
+}
+
+/* ---------- Vistas ---------- */
+function setView(v){
+  view=v;$('#layout').dataset.view=v;
+  ['map','diary','hero'].forEach(function(k){var on=k===v;$('#view-'+k).hidden=!on;var t=$('#tab-'+k);t.setAttribute('aria-selected',on?'true':'false');});
+  window.scrollTo({top:0,behavior:REDUCED?'auto':'smooth'});
+}
+function renderAll(){
+  $('#intro').hidden=S.started;
+  $('#pillStars').textContent='★ '+stars();
+  renderStops();placeHero(0);renderMission();renderDiary();updateCompass();
+}
+
+/* ---------- Eventos ---------- */
+document.addEventListener('click',function(e){
+  var chip=e.target.closest('#fichaModal [data-g]');
+  if(chip){var g=chip.dataset.g,v=chip.dataset.v;
+    if(g==='size'||g==='beak')F[g]=F[g]===v?'':v;else{var i=F[g].indexOf(v);if(i>-1)F[g].splice(i,1);else F[g].push(v);}
+    var f=document.activeElement&&document.activeElement.dataset?document.activeElement.dataset.v:null;renderFichaChips();
+    if(f){var again=$('#fichaModal [data-g="'+g+'"][data-v="'+f+'"]');if(again)again.focus();}return;}
+  var hk=e.target.closest('#view-hero [data-k]');
+  if(hk){var k=hk.dataset.k,v2=hk.dataset.v;S.hero[k]=/^\d+$/.test(v2)?+v2:v2;
+    if(k==='gender'){var hs0=S.hero.hairStyle;if(v2==='mujer'&&(hs0==='corto'||hs0==='ninguno'))S.hero.hairStyle='largo';else if(v2==='hombre'&&['flequillo','colitas','trenzas','rodete'].indexOf(hs0)>-1)S.hero.hairStyle='corto';}
+    save();syncHero();return;}
+  var ha=e.target.closest('#view-hero [data-acc]');
+  if(ha){S.hero.acc[ha.dataset.acc]=!S.hero.acc[ha.dataset.acc];save();syncHero();return;}
+  var tab=e.target.closest('.tab');if(tab){setView(tab.dataset.view);return;}
+  var st=e.target.closest('.stop');
+  if(st){var i=+st.dataset.i;if(!S.started){toast('Tocá "¡Empezar!" para comenzar el recorrido.');return;}
+    if(i<=S.level&&S.level<=3){openFicha(null,i);}else toast('Todavía no llegaste a la '+STOPS[i].short+'.');return;}
+  var b=e.target.closest('[data-act]');if(!b)return;
+  switch(b.dataset.act){
+    case 'start':S.started=true;save();renderAll();setView('hero');toast('Armá tu explorador y volvé al mapa.');break;
+    case 'hero-done':setView('map');break;
+    case 'new-bird':openFicha(null,Math.min(S.level,2));break;
+    case 'open-bird':openFicha(b.dataset.id);break;
+    case 'close-ficha':closeModal($('#fichaModal'));break;
+    case 'delete-bird':
+      if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Tocá otra vez para eliminar';}
+      else{S.birds=S.birds.filter(function(x){return x.id!==F.id});save();closeModal($('#fichaModal'));renderAll();toast('Ficha eliminada.');}
+      break;
+    case 'advance':advance();break;
+    case 'go-diary':setView('diary');break;
+    case 'replay':S.level=0;heroDist=cum[0];save();renderAll();break;
+    case 'close-cel':var go=b.dataset.go;closeModal($('#celModal'));if(go==='diary')setView('diary');break;
+    case 'settings':renderCalib();$('#calibStatus').textContent='';$('#btnReset').textContent='Borrar todo';$('#btnReset').dataset.sure='';openModal($('#setModal'));break;
+    case 'close-set':closeModal($('#setModal'));break;
+    case 'calib-set':calibSet(+b.dataset.i);break;
+    case 'calib-clear':S.coords[+b.dataset.i]=null;save();renderCalib();updateCompass();break;
+    case 'reset':
+      if(b.dataset.sure!=='1'){b.dataset.sure='1';b.textContent='Tocá otra vez para borrar todo';}
+      else{try{localStorage.removeItem(KEY)}catch(x){}S=load();S.hero=defaultHero();S.birds=[];S.level=0;S.started=false;S.coords=[null,null,null];heroDist=cum[0];closeModal($('#setModal'));syncHero();$('#heroName').value='';renderAll();setView('map');toast('Listo, empezás de cero.');}
+      break;
+    case 'download':downloadGame();break;
+    case 'random':randomHero();break;
+    case 'sensor':enableSensors();break;
+  }
+});
+document.addEventListener('keydown',function(e){
+  if((e.key==='Enter'||e.key===' ')&&e.target.classList&&e.target.classList.contains('stop')){e.preventDefault();e.target.dispatchEvent(new MouseEvent('click',{bubbles:true}));}
+});
+$('#heroName').addEventListener('input',function(e){S.hero.name=e.target.value;save();$('#pillName').textContent=e.target.value.trim()||heroLabel();renderMission();});
+$('#photoBtn').addEventListener('click',function(){$('#photoInput').click();});
+$('#photoDel').addEventListener('click',function(){F.photo=null;renderPhoto();});
+$('#photoInput').addEventListener('change',function(e){var f=e.target.files&&e.target.files[0];if(!f)return;
+  fileToDataURL(f).then(function(d){F.photo=d;renderPhoto();$('#fErr').textContent='';}).catch(function(){$('#fErr').textContent='No pude leer esa foto. Probá con otra.';});e.target.value='';});
+$('#fichaForm').addEventListener('submit',saveFicha);
+$('#fUnknown').addEventListener('change',function(e){if(e.target.checked)$('#fErr').textContent='';});
+['fichaModal','celModal','setModal'].forEach(function(id){var m=$('#'+id);m.addEventListener('mousedown',function(e){if(e.target===m)closeModal(m);});});
+
+/* ---------- Descarga del juego ---------- */
+var dlApi=null;
+function downloadGame(){
+  var node=document.getElementById('srcCopy');
+  if(!dlApi||!node){toast('La descarga no está disponible en esta vista.');return;}
+  var text=node.textContent.replace(/<\\\/script/g,'<'+'/script');
+  dlApi.save({filename:'EcoQuest.html',data:text}).then(function(){toast('Listo. Abrí el archivo descargado en el celular.');})
+    .catch(function(err){if(err&&err.code==='declined')return;toast('No pude preparar la descarga.');});
+}
+(async function(){
+  try{
+    if(!window.claude||!window.claude.use||!document.getElementById('srcCopy'))return;
+    dlApi=await window.claude.use('downloads');
+    if(!dlApi)return;
+    $$('[data-act="download"]').forEach(function(b){b.hidden=false;});$('#dlBox').hidden=false;
+  }catch(e){dlApi=null;}
+})();
+
+/* ---------- Inicio ---------- */
+buildDial();buildStops();buildHeroEditor();
+$('#heroName').value=S.hero.name||'';
+syncHero();renderAll();
+})();
+</script>
+
+</body>
+</html>
