@@ -26,6 +26,9 @@ export interface Bird {
   categoryLabel: string;
   description: string;
   photoUrl: string;
+  audioUrl?: string;
+  audioAttribution?: string;
+  audioSourceUrl?: string;
   isCustom?: boolean;
 }
 
@@ -44,5 +47,7 @@ export interface BirdSighting {
   notes: string;
   photoBase64?: string;
   photoUrl?: string;
+  audioBase64?: string;
+  audioFileName?: string;
   createdAt: number;
 }

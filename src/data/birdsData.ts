@@ -9,7 +9,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Pato pequeño y vistoso. Los machos tienen una franja negra en la cabeza y el cuello, pecho rosáceo con pecas negras y costados grisáceos, mientras que las hembras son más pardas con manchas blancas. Ambos tienen una mancha blanca muy notable en las alas al volar.',
-    photoUrl: '/birds/pato-de-collar.jpg'
+    photoUrl: '/birds/pato-de-collar.jpg',
+    audioUrl: '/sounds/pato-de-collar.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1077495) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1077495'
   },
   {
     id: 'pato-maicero',
@@ -18,7 +21,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Es un pato de tamaño mediano, su cuerpo tiene plumas de tonos marrones y beige con manchas oscuras, tiene un cuello largo y fino de color marrón claro y su pico es de color amarillo, con una mancha negra en la punta y en los costados.',
-    photoUrl: '/birds/pato-maicero.jpg'
+    photoUrl: '/birds/pato-maicero.jpg',
+    audioUrl: '/sounds/pato-maicero.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC53474) • Grabado por Felix Vidoz en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/53474'
   },
   {
     id: 'pato-barcino',
@@ -27,7 +33,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'De tamaño mediano con cuerpo compacto y aspecto pardo finamente moteado. Tiene cabeza oscura, cuello corto, cola corta, patas grisáceas y pico amarillo. Presenta un característico espejo alar negro y verde.',
-    photoUrl: '/birds/pato-barcino.jpg'
+    photoUrl: '/birds/pato-barcino.jpg',
+    audioUrl: '/sounds/pato-barcino.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1094248) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1094248'
   },
   {
     id: 'pollona-negra',
@@ -36,7 +45,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Presenta cabeza y pecho de color gris plomizo, dorso pardo oliváceo, alas y cola cortas y patas rojizas. Su característica principal es el pico largo verdoso, con zonas celestes y rojas acompañado junto con un iris rojo.',
-    photoUrl: '/birds/pollona-negra.jpg'
+    photoUrl: '/birds/pollona-negra.jpg',
+    audioUrl: '/sounds/pollona-negra.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1018760) • Grabado por Marcos E. Sosa en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1018760'
   },
   {
     id: 'maca-comun',
@@ -45,7 +57,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Es un ave acuática pequeña y excelente buceadora, y pasa gran parte de su tiempo en el agua. Puede sumergirse rápidamente para escapar de amenazas o para buscar alimento bajo la superficie. Durante la época reproductiva presenta un aspecto más llamativo, con un penacho blanco en la cabeza y ojos rojos.',
-    photoUrl: '/birds/maca-comun.jpg'
+    photoUrl: '/birds/maca-comun.jpg',
+    audioUrl: '/sounds/maca-comun.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC45665) • Grabado por Bernabe Lopez-Lanus en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/45665'
   },
   {
     id: 'gallareta',
@@ -54,7 +69,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Ave acuática pequeña, de color gris oscuro a negruzco. Tiene un escudo frontal sobre el pico de color amarillo o rojizo, y se destaca por tener una mancha blanca muy visible en el borde trasero de sus alas.',
-    photoUrl: '/birds/gallareta.jpg'
+    photoUrl: '/birds/gallareta.jpg',
+    audioUrl: '/sounds/gallareta.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC962528) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/962528'
   },
   {
     id: 'gallineta-pico-pintado',
@@ -63,7 +81,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Presenta cabeza y pecho de color gris plomizo, dorso pardo oliváceo, alas y cola cortas y patas rojizas. Su característica principal es el pico largo verdoso, con zonas celestes y rojas acompañado junto con un iris rojo.',
-    photoUrl: '/birds/gallineta-pico-pintado.jpg'
+    photoUrl: '/birds/gallineta-pico-pintado.jpg',
+    audioUrl: '/sounds/gallineta-pico-pintado.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC878956) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/878956'
   },
   {
     id: 'garza-blanca',
@@ -72,7 +93,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Tamaño grande, plumaje completamente blanco, pico largo y de color amarillo brillante (en época reproductiva se torna más oscuro); patas y piernas de color oscuro o negro.',
-    photoUrl: '/birds/garza-blanca.jpg'
+    photoUrl: '/birds/garza-blanca.jpg',
+    audioUrl: '/sounds/garza-blanca.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC361135) • Grabado por Niels Krabbe en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/361135'
   },
   {
     id: 'cuervillo-cara-pelada',
@@ -81,7 +105,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Ave de tamaño mediano y silueta esbelta, con plumaje compacto de color castaño oscuro a negruzco y leves reflejos opacos. Sus alas presentan tonalidades más uniformes. Se caracteriza por tener la cara desnuda de color rosado, patas largas y rojizas, y un pico largo, grueso y curvado hacia abajo.',
-    photoUrl: '/birds/cuervillo-cara-pelada.jpg'
+    photoUrl: '/birds/cuervillo-cara-pelada.jpg',
+    audioUrl: '/sounds/cuervillo-cara-pelada.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC46344) • Grabado por Bernabe Lopez-Lanus en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/46344'
   },
   {
     id: 'tero-real',
@@ -90,7 +117,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Ave estilizada que se destaca por el contraste de su plumaje bicolor: presenta el dorso, las alas y la corona de negro, mientras que la frente, el cuello y el vientre son de color blanco. Su rasgo más llamativo son sus patas largas de color rojo intenso y un pico recto, fino y largo de color negro.',
-    photoUrl: '/birds/tero-real.jpg'
+    photoUrl: '/birds/tero-real.jpg',
+    audioUrl: '/sounds/tero-real.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC562295) • Grabado por Rosendo Manuel Fraga en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/562295'
   },
   {
     id: 'bigua',
@@ -99,7 +129,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'acuaticas',
     categoryLabel: 'Aves acuáticas y de humedales',
     description: 'Ave acuática grande, de entre 70 y 75 cm, con plumaje negro brillante, cuello largo, pico con punta en forma de gancho y patas negras palmeadas. Tiene una zona amarillenta en la base del pico y la garganta. En época reproductiva presenta detalles blancos en la garganta y finos penachos en la cabeza y el cuello. Los juveniles son pardos, con el pecho y el vientre más claros.',
-    photoUrl: '/birds/bigua.jpg'
+    photoUrl: '/birds/bigua.jpg',
+    audioUrl: '/sounds/bigua.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC361132) • Grabado por Niels Krabbe en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/361132'
   },
 
   // --- AVES DE ÁRBOLES Y ARBUSTOS (6 Especies) ---
@@ -110,7 +143,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'arboles',
     categoryLabel: 'Aves de árboles y arbustos',
     description: 'Ave de plumaje muy variable (gris, ceniza, castaño o manchado), con cabeza oscura y reflejos iridiscentes verdosos y violáceos en el cuello. Pico fino con cera blanca en la base.',
-    photoUrl: '/birds/paloma.jpg'
+    photoUrl: '/birds/paloma.jpg',
+    audioUrl: '/sounds/paloma.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC48676) • Grabado por Bernabe Lopez-Lanus en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/48676'
   },
   {
     id: 'cotorra',
@@ -119,7 +155,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'arboles',
     categoryLabel: 'Aves de árboles y arbustos',
     description: 'Ave de tamaño mediano, de color verde brillante en su espalda y alas, con la frente y el pecho de un tono gris claro con líneas. Tiene un pico correoso, curvado y de color carne o amarillento. Son muy sociales y famosas por hacer ruido de chillidos.',
-    photoUrl: '/birds/cotorra.jpg'
+    photoUrl: '/birds/cotorra.jpg',
+    audioUrl: '/sounds/cotorra.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1001665) • Grabado por Marcos E. Sosa en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1001665'
   },
   {
     id: 'calandria-grande',
@@ -128,7 +167,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'arboles',
     categoryLabel: 'Aves de árboles y arbustos',
     description: 'Ave mediana de plumaje pardo grisáceo en el dorso, vientre claro y cola larga con puntas blancas visibles en vuelo. Presenta una ceja blanca definida y una fina lista negra a través del ojo.',
-    photoUrl: '/birds/calandria-grande.jpg'
+    photoUrl: '/birds/calandria-grande.jpg',
+    audioUrl: '/sounds/calandria-grande.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1090727) • Grabado por Pedro Sanetti en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1090727'
   },
   {
     id: 'benteveo',
@@ -137,7 +179,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'arboles',
     categoryLabel: 'Aves de árboles y arbustos',
     description: 'Ave pequeña y robusta, con pecho y vientre amarillo intenso y dorso pardo oliváceo. Su cabeza presenta una corona negra, una ceja blanca y garganta blanquecina. Tiene un pico largo, fuerte y negro, ligeramente curvado en la punta. Además, oculta plumas amarillas brillantes que despliega cuando está alarmada o en cortejo.',
-    photoUrl: '/birds/benteveo.jpg'
+    photoUrl: '/birds/benteveo.jpg',
+    audioUrl: '/sounds/benteveo.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1012147) • Grabado por Marcos E. Sosa en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1012147'
   },
   {
     id: 'chingolo-comun',
@@ -146,7 +191,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'arboles',
     categoryLabel: 'Aves de árboles y arbustos',
     description: 'Pájaro pequeño. Tiene la cabeza gris y un copete con rayas negras. Su pecho es de color claro, con algunos reflejos oscuros. Sus dedos le permiten sujetarse a las ramas de los árboles. Se alimenta principalmente de semillas y frutas, que busca en el suelo y entre los arbustos.',
-    photoUrl: '/birds/chingolo-comun.jpg'
+    photoUrl: '/birds/chingolo-comun.jpg',
+    audioUrl: '/sounds/chingolo-comun.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1084169) • Grabado por Marcos E. Sosa en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1084169'
   },
   {
     id: 'hornero',
@@ -155,7 +203,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'arboles',
     categoryLabel: 'Aves de árboles y arbustos',
     description: 'Ave mediana, de plumaje predominantemente pardo rojizo, alas algo más oscuras y garganta clara. Tiene cuerpo robusto, cola corta y pico recto y fuerte.',
-    photoUrl: '/birds/hornero.jpg'
+    photoUrl: '/birds/hornero.jpg',
+    audioUrl: '/sounds/hornero.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1106565) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1106565'
   },
 
   // --- AVES DE ESPACIOS ABIERTOS Y PASTIZALES (5 Especies) ---
@@ -166,7 +217,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'pastizales',
     categoryLabel: 'Aves de espacios abiertos y pastizales',
     description: 'Pájaro de tamaño mediano. Tiene la cara y el pecho de color amarillo intenso, con la parte superior de la cabeza y la nuca de color negro. Su espalda y alas tienen líneas o barras negras y pardas. Los machos se diferencian por tener una línea roja a los costados de la garganta.',
-    photoUrl: '/birds/carpintero-campestre.jpg'
+    photoUrl: '/birds/carpintero-campestre.jpg',
+    audioUrl: '/sounds/carpintero-campestre.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC910836) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/910836'
   },
   {
     id: 'picabuey',
@@ -175,7 +229,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'pastizales',
     categoryLabel: 'Aves de espacios abiertos y pastizales',
     description: 'Ave pequeña y silueta esbelta. Presenta un plumaje de color pardo suave en el dorso, una cabeza grisácea con garganta blanquecina y un pecho y vientre de color amarillo. Cuenta con un pico corto y patas negras, y posee una corona oculta de plumas de un rojo o naranja encendido, la cual despliega cuando se encuentra alterado.',
-    photoUrl: '/birds/picabuey.jpg'
+    photoUrl: '/birds/picabuey.jpg',
+    audioUrl: '/sounds/picabuey.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC872445) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/872445'
   },
   {
     id: 'tordo-renegrido',
@@ -184,7 +241,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'pastizales',
     categoryLabel: 'Aves de espacios abiertos y pastizales',
     description: 'Es un ave de tamaño mediano. El macho adulto tiene un plumaje negro brillante con reflejos azulados o violáceos que brillan a la luz del sol. En cambio, la hembra es de un color marrón más apagado u oscuro. Tiene un pico cónico, fuerte y puntiagudo.',
-    photoUrl: '/birds/tordo-renegrido.jpg'
+    photoUrl: '/birds/tordo-renegrido.jpg',
+    audioUrl: '/sounds/tordo-renegrido.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1137023) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1137023'
   },
   {
     id: 'chimango',
@@ -193,7 +253,10 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'pastizales',
     categoryLabel: 'Aves de espacios abiertos y pastizales',
     description: 'Rapaz de tamaño mediano (unos 37-40 cm) y plumaje predominantemente pardo castaño. Presenta alas largas con una franja o "ventana" clara notable en vuelo, cola larga barrada y pico claro con cera amarillenta.',
-    photoUrl: '/birds/chimango.jpg'
+    photoUrl: '/birds/chimango.jpg',
+    audioUrl: '/sounds/chimango.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1001791) • Grabado por Marcos E. Sosa en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1001791'
   },
   {
     id: 'tero-comun',
@@ -202,6 +265,9 @@ export const OFFICIAL_ECOQUEST_BIRDS: Bird[] = [
     category: 'pastizales',
     categoryLabel: 'Aves de espacios abiertos y pastizales',
     description: 'Ave mediana de patas largas y aspecto elegante. Su plumaje combina tonos grises y pardos con el vientre blanco. Tiene cresta larga y fina en la parte de atrás de la cabeza, un pico rojizo con punta negra, tienen una espina afilada en la articulación de cada ala que usan para defenderse.',
-    photoUrl: '/birds/tero-comun.jpg'
+    photoUrl: '/birds/tero-comun.jpg',
+    audioUrl: '/sounds/tero-comun.mp3',
+    audioAttribution: 'Audio de Xeno-Canto (XC1052119) • Grabado por Franco Vushurovich en Argentina',
+    audioSourceUrl: 'https://xeno-canto.org/1052119'
   }
 ];

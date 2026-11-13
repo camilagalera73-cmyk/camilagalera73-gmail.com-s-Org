@@ -748,7 +748,7 @@ export const ParkExpeditionGame: React.FC = () => {
             onClick={() => setActiveSubTab('map')}
             className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 ${
               activeSubTab === 'map'
-                ? 'bg-[#f4bb29] text-[#263b2b] shadow-md'
+                ? 'bg-[#3a1c36] text-white shadow-md'
                 : 'text-amber-100 hover:text-white hover:bg-white/10'
             }`}
           >
@@ -760,13 +760,13 @@ export const ParkExpeditionGame: React.FC = () => {
             onClick={() => setActiveSubTab('diary')}
             className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 ${
               activeSubTab === 'diary'
-                ? 'bg-[#f4bb29] text-[#263b2b] shadow-md'
+                ? 'bg-[#3a1c36] text-white shadow-md'
                 : 'text-amber-100 hover:text-white hover:bg-white/10'
             }`}
           >
             <Camera className="w-4 h-4" />
             Mi Diario de Aves
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-black bg-[#263b2b] text-amber-300">
+            <span className="px-2 py-0.5 rounded-full text-[11px] font-black bg-white/20 text-white">
               {birds.length}
             </span>
           </button>
@@ -775,7 +775,7 @@ export const ParkExpeditionGame: React.FC = () => {
             onClick={() => setActiveSubTab('hero')}
             className={`px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition flex items-center gap-2 ${
               activeSubTab === 'hero'
-                ? 'bg-[#f4bb29] text-[#263b2b] shadow-md'
+                ? 'bg-[#3a1c36] text-white shadow-md'
                 : 'text-amber-100 hover:text-white hover:bg-white/10'
             }`}
           >
@@ -898,7 +898,7 @@ export const ParkExpeditionGame: React.FC = () => {
                     setActiveSubTab('hero');
                     showToast('Paso 1: Armá tu explorador y volvé al mapa.');
                   }}
-                  className="mt-6 px-8 py-3.5 rounded-full text-base font-extrabold bg-[#f4bb29] text-[#263b2b] hover:bg-[#ffc940] transition shadow-xl active:scale-95"
+                  className="mt-6 px-8 py-3.5 rounded-full text-base font-extrabold bg-[#3a1c36] text-white hover:bg-[#281325] transition shadow-xl active:scale-95"
                 >
                   ¡Empezar la salida!
                 </button>
@@ -1026,7 +1026,7 @@ export const ParkExpeditionGame: React.FC = () => {
                           disabled={birdsAtStop(level) < NEED || walking}
                           className={`px-6 py-3.5 rounded-full text-sm sm:text-base font-extrabold transition shadow-md flex items-center gap-2.5 ${
                             birdsAtStop(level) >= NEED && !walking
-                              ? 'bg-[#A8582E] text-white hover:bg-[#8d4724] active:scale-95'
+                              ? 'bg-[#3a1c36] text-white hover:bg-[#281325] active:scale-95'
                               : 'bg-slate-200 text-slate-500 cursor-not-allowed'
                           }`}
                         >
@@ -1099,7 +1099,7 @@ export const ParkExpeditionGame: React.FC = () => {
                   </p>
                   <button
                     onClick={() => handleOpenFicha(null, Math.min(level, 2))}
-                    className="mt-4 px-6 py-2.5 rounded-full text-xs font-extrabold bg-[#A8582E] text-white hover:bg-[#8d4724] transition shadow-sm"
+                    className="mt-4 px-6 py-2.5 rounded-full text-xs font-extrabold bg-[#3a1c36] text-white hover:bg-[#281325] transition shadow-sm"
                   >
                     Crear mi primera ficha
                   </button>

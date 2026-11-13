@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
-import { BirdMap } from './components/BirdMap';
 import { BirdCatalog } from './components/BirdCatalog';
 import { SightingsGallery } from './components/SightingsGallery';
-import { FieldAlbum } from './components/FieldAlbum';
 import { FieldGames } from './components/FieldGames';
 import { ParkExpeditionGame } from './components/ParkExpeditionGame';
 import { ConservationGuide } from './components/ConservationGuide';
@@ -14,8 +12,10 @@ import { OfflineIndicator } from './components/OfflineIndicator';
 import { NewSightingModal } from './components/NewSightingModal';
 import { SightingCardModal } from './components/SightingCardModal';
 import { BirdDetailModal } from './components/BirdDetailModal';
-import { AddBirdModal } from './components/AddBirdModal';
 import { BrochureModal } from './components/BrochureModal';
+import { ShareAppModal } from './components/ShareAppModal';
+import { FieldLogbookModal } from './components/FieldLogbookModal';
+import { PermissionsWelcomeModal } from './components/PermissionsWelcomeModal';
 
 import { Bird, BirdSighting } from './types/bird';
 import { storageService } from './services/storageService';
@@ -24,7 +24,7 @@ import { CheckCircle2 } from 'lucide-react';
 export default function App() {
   const [birds, setBirds] = useState<Bird[]>([]);
   const [sightings, setSightings] = useState<BirdSighting[]>([]);
-  const [activeTab, setActiveTab] = useState<string>('mapa');
+  const [activeTab, setActiveTab] = useState<string>('aves');
 
   // Modals state
   const [isNewSightingOpen, setIsNewSightingOpen] = useState(false);
@@ -33,8 +33,10 @@ export default function App() {
 
   const [selectedSighting, setSelectedSighting] = useState<BirdSighting | null>(null);
   const [selectedBird, setSelectedBird] = useState<Bird | null>(null);
-  const [isAddBirdOpen, setIsAddBirdOpen] = useState(false);
   const [isBrochureOpen, setIsBrochureOpen] = useState(false);
+  const [isShareOpen, setIsShareOpen] = useState(false);
+  const [isLogbookOpen, setIsLogbookOpen] = useState(false);
+  const [isPermissionsOpen, setIsPermissionsOpen] = useState(false);
 
   // Success toast notice
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -69,15 +71,6 @@ export default function App() {
     showToast('Ficha de avistamiento eliminada.');
   };
 
-  const handleFocusOnMap = (sighting: BirdSighting) => {
-    setActiveTab('mapa');
-    setSelectedSighting(sighting);
-    const mapSection = document.getElementById('mapa');
-    if (mapSection) {
-      mapSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   // Trigger new sighting modal from various sources
   const handleOpenNewSighting = (coords?: { lat: number; lng: number; placeName?: string }) => {
     setEditingSighting(null);
@@ -104,13 +97,7 @@ export default function App() {
   const handleBirdAdded = (newBird: Bird) => {
     const updated = storageService.getAllBirds();
     setBirds(updated);
-    showToast(`¡"${newBird.name}" agregada al catálogo de aves!`);
-  };
-
-  const handleImportDone = () => {
-    setBirds(storageService.getAllBirds());
-    setSightings(storageService.getSightings());
-    showToast('Datos de bitácora y álbum sincronizados.');
+    showToast(`¡"${newBird.name}" agregada con éxito!`);
   };
 
   return (
@@ -128,15 +115,14 @@ export default function App() {
         onOpenNewSighting={() => handleOpenNewSighting()}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
+        onOpenShare={() => setIsShareOpen(true)}
+        onOpenLogbook={() => setIsLogbookOpen(true)}
+        onOpenPermissions={() => setIsPermissionsOpen(true)}
       />
 
       <main className="flex-1">
         {/* Hero Banner */}
         <Hero
-          onOpenMap={() => {
-            setActiveTab('mapa');
-            document.getElementById('mapa')?.scrollIntoView({ behavior: 'smooth' });
-          }}
           onOpenNewSighting={() => handleOpenNewSighting()}
           onOpenFieldNotebook={() => {
             setActiveTab('album');
@@ -148,81 +134,26 @@ export default function App() {
           }}
         />
 
-        {/* SECTION 1: MAPA DE AVES DE VILLA MERCEDES (Callejero y Satélite Real con Leaflet) */}
-        <section id="mapa" className="py-8 px-4 sm:px-6 max-w-7xl mx-auto">
-          {/* Header Card with Organic Blob Manchas and Generous Padding */}
-          <div className="relative overflow-hidden rounded-3xl bg-[#f4f7ee]/90 border border-emerald-900/15 p-6 sm:p-8 md:p-10 shadow-sm mb-6 transition-all">
-            {/* Organic Blob Mancha Backdrops (from user asset) */}
-            <img
-              src="/blob-shape.jpg"
-              alt=""
-              aria-hidden="true"
-              className="absolute -right-8 -bottom-12 w-48 sm:w-72 h-auto opacity-35 mix-blend-multiply pointer-events-none select-none rotate-12 transition-transform duration-700"
-            />
-            <img
-              src="/blob-shape.jpg"
-              alt=""
-              aria-hidden="true"
-              className="absolute -left-12 -top-10 w-40 sm:w-56 h-auto opacity-20 mix-blend-multiply pointer-events-none select-none -rotate-45 scale-x-[-1]"
-            />
-            <img
-              src="/blob-shape.jpg"
-              alt=""
-              aria-hidden="true"
-              className="absolute left-1/2 -bottom-16 -translate-x-1/2 w-36 sm:w-48 h-auto opacity-15 mix-blend-multiply pointer-events-none select-none rotate-90"
-            />
-
-            <div className="relative z-10">
-              <div className="flex flex-wrap items-center gap-2.5 mb-3">
-                <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#9a561d] bg-amber-100/90 px-3.5 py-1 rounded-full border border-amber-900/15 shadow-xs flex items-center gap-1.5">
-                  <span className="text-sm">📍</span>
-                  Eco-Quest • Mapa Interactivo de Villa Mercedes
-                </span>
-              </div>
-
-              <h2 className="text-2xl sm:text-4xl font-extrabold font-serif-fraunces text-[#263b2b] tracking-tight">
-                Mapa de Aves de Villa Mercedes
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-700 mt-2 max-w-3xl leading-relaxed">
-                Puntos de avistaje de las 22 especies del catálogo en la ciudad, diques, parques y riberas del Río Quinto. Tocá cualquier punto para ver la ficha del ave o hacé clic en el mapa para marcar tu propio avistamiento con GPS.
-              </p>
-            </div>
-          </div>
-
-          <BirdMap
-            sightings={sightings}
-            onOpenNewSighting={handleOpenNewSighting}
-            onSelectSighting={setSelectedSighting}
-          />
-        </section>
-
-        {/* SECTION 2: CATÁLOGO OFICIAL DE AVES PROYECTO ECO-QUEST (UNVIM) */}
+        {/* SECTION 1: CATÁLOGO OFICIAL DE AVES PROYECTO ECO-QUEST (UNViMe) */}
         <BirdCatalog
           birds={birds}
           onSelectBird={setSelectedBird}
           onRecordSighting={handleRecordFromBird}
-          onAddNewBird={() => setIsAddBirdOpen(true)}
           onViewOriginalBrochure={() => setIsBrochureOpen(true)}
         />
 
-        {/* SECTION 3: MIS FICHAS DE CAMPO (BITÁCORA) */}
+        {/* SECTION 2: MIS FICHAS DE CAMPO (FICHAS CON FOTO CAPTURADA Y DATOS COMPLETOS) */}
         <SightingsGallery
           sightings={sightings}
+          allBirds={birds}
           onOpenNewSighting={() => handleOpenNewSighting()}
+          onOpenLogbook={() => setIsLogbookOpen(true)}
           onSelectSighting={setSelectedSighting}
-          onFocusOnMap={handleFocusOnMap}
           onEditSighting={handleEditSighting}
           onDeleteSighting={handleDeleteSighting}
-          onImportDone={handleImportDone}
         />
 
-        {/* SECTION 4: ÁLBUM CHECKLIST */}
-        <FieldAlbum
-          birds={birds}
-          onSelectBird={setSelectedBird}
-        />
-
-        {/* SECTION 5: JUEGOS Y TRIVIA (EXPEDICIÓN POR PARADAS + TRIVIA + MEMOTEST) */}
+        {/* SECTION 3: JUEGOS Y TRIVIA (EXPEDICIÓN POR PARADAS + TRIVIA + MEMOTEST) */}
         <div id="juegos" className="scroll-mt-20">
           <ParkExpeditionGame />
           <FieldGames />
@@ -247,6 +178,10 @@ export default function App() {
           setNewSightingCoords(null);
         }}
         onSave={handleSaveSighting}
+        onAddBirdToCatalog={(newBird) => {
+          storageService.saveCustomBird(newBird);
+          handleBirdAdded(newBird);
+        }}
         allBirds={birds}
         initialCoords={newSightingCoords}
         existingSighting={editingSighting}
@@ -265,15 +200,35 @@ export default function App() {
         onRecordSighting={handleRecordFromBird}
       />
 
-      <AddBirdModal
-        isOpen={isAddBirdOpen}
-        onClose={() => setIsAddBirdOpen(false)}
-        onBirdAdded={handleBirdAdded}
-      />
-
       <BrochureModal
         isOpen={isBrochureOpen}
         onClose={() => setIsBrochureOpen(false)}
+      />
+
+      <ShareAppModal
+        isOpen={isShareOpen}
+        onClose={() => setIsShareOpen(false)}
+      />
+
+      <FieldLogbookModal
+        isOpen={isLogbookOpen}
+        onClose={() => setIsLogbookOpen(false)}
+        sightings={sightings}
+        allBirds={birds}
+        onOpenNewSighting={() => {
+          setIsLogbookOpen(false);
+          handleOpenNewSighting();
+        }}
+        onSelectSighting={(sighting) => {
+          setIsLogbookOpen(false);
+          setSelectedSighting(sighting);
+        }}
+      />
+
+      <PermissionsWelcomeModal
+        isOpen={isPermissionsOpen}
+        onOpen={() => setIsPermissionsOpen(true)}
+        onClose={() => setIsPermissionsOpen(false)}
       />
     </div>
   );

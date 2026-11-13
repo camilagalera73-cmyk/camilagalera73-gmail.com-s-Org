@@ -1,18 +1,36 @@
 @import "tailwindcss";
 @import "leaflet/dist/leaflet.css";
 
-/* Fonts: Gilker (Canva display font) for Titles & Subtitles, SIRENIK for body/text */
+/* Fonts: Josefin Sans (provided by user for titles and fine text) */
 @font-face {
-  font-family: 'Gilker';
-  src: local('Gilker'), local('Gliker'), local('Gliker-Regular'), local('Gliker-Bold'), local('Gliker Regular'), local('Gliker Bold');
-  font-weight: 400 900;
+  font-family: 'Josefin Sans';
+  src: url('/fonts/josefinsans/JosefinSans-Bold.ttf') format('truetype');
+  font-weight: 700 900;
+  font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: 'SIRENIK';
-  src: local('SIRENIK'), local('Sirenik'), local('Sirenik-Regular'), local('Sirenik Regular');
-  font-weight: 300 800;
+  font-family: 'Josefin Sans';
+  src: url('/fonts/josefinsans/JosefinSans-SemiBold.ttf') format('truetype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Josefin Sans';
+  src: url('/fonts/josefinsans/JosefinSans-Regular.ttf') format('truetype');
+  font-weight: 400 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Josefin Sans';
+  src: url('/fonts/josefinsans/JosefinSans-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
   font-display: swap;
 }
 
@@ -26,8 +44,10 @@
     --sky: #78bfd5;
     --leaf: #557544;
     --clay: #a84d2b;
-    --font-title: 'Gilker', 'Gliker', 'Fraunces', Georgia, serif;
-    --font-text: 'SIRENIK', 'Sirenik', 'Cormorant Garamond', 'Bodoni Moda', 'Playfair Display', Georgia, serif;
+    --brand-plum: #3a1c36;
+    --brand-plum-hover: #281325;
+    --font-title: 'Josefin Sans', sans-serif;
+    --font-text: 'Josefin Sans', sans-serif;
   }
 
   :root {
@@ -36,6 +56,7 @@
 
   body {
     font-family: var(--font-text) !important;
+    font-weight: 400;
     font-variant-numeric: lining-nums tabular-nums;
     color: var(--ink);
     background-color: var(--cream);
@@ -45,19 +66,27 @@
     overflow-x: hidden;
   }
 
+  /* Titles & Subtitles: Match the bold geometric ECO QUEST logo */
   h1, h2, h3, h4, h5, h6, .font-serif-fraunces, .title-font, [class*="font-serif"] {
     font-family: var(--font-title) !important;
-    letter-spacing: -0.01em;
+    font-weight: 800;
+    letter-spacing: -0.015em;
     font-variant-numeric: lining-nums tabular-nums;
   }
 
-  body, p, span, button, input, label, select, textarea, li, a, td, th, div:not([class*="font-serif"]) {
+  /* Body & Text: Clean, fine and highly legible */
+  body, button, input, label, select, textarea, li, a, td, th, div:not([class*="font-serif"]) {
     font-family: var(--font-text);
   }
 
   p, span, li, a, label, button, input, select, textarea {
     font-family: var(--font-text) !important;
     font-variant-numeric: lining-nums tabular-nums;
+  }
+
+  p {
+    font-weight: 350;
+    letter-spacing: 0.005em;
   }
 }
 

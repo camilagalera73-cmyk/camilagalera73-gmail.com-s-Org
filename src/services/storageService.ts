@@ -2,97 +2,16 @@ import { BirdSighting, Bird } from '../types/bird';
 import { OFFICIAL_ECOQUEST_BIRDS } from '../data/birdsData';
 
 // Incremented storage keys to ensure clean migration and flush any legacy birds from previous versions
-const SIGHTINGS_KEY = 'ecoquest_unvim_sightings_v4';
-const ALBUM_KEY = 'ecoquest_unvim_album_v4';
-const CUSTOM_BIRDS_KEY = 'ecoquest_unvim_custom_v4';
+const SIGHTINGS_KEY = 'ecoquest_unvime_sightings_v5';
+const ALBUM_KEY = 'ecoquest_unvime_album_v5';
+const CUSTOM_BIRDS_KEY = 'ecoquest_unvime_custom_v5';
 
-// Valid bird names from the official UNViM poster
+// Valid bird names from the official UNViMe poster
 const VALID_BIRD_NAMES = new Set(OFFICIAL_ECOQUEST_BIRDS.map(b => b.name.toLowerCase()));
 
-// Sample initial sightings placed on real geographical coordinates of Villa Mercedes
-// Strictly from the 22 birds in the Eco-quest poster!
-const INITIAL_SAMPLE_SIGHTINGS: BirdSighting[] = [
-  {
-    id: 'eco-sample-1',
-    birdName: 'Garza blanca',
-    scientificName: 'Ardea alba',
-    date: '2026-10-21',
-    time: '08:45',
-    placeName: 'Dique Vulpiani (Compuertas & Humedal)',
-    lat: -33.6482,
-    lng: -65.4985,
-    count: 2,
-    category: 'acuaticas',
-    behavior: 'Alimentándose',
-    photoUrl: '/birds/garza-blanca.jpg',
-    notes: 'Dos ejemplares vadeando en el agua mansa. Tamaño grande, plumaje completamente blanco y pico amarillo brillante.',
-    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 3
-  },
-  {
-    id: 'eco-sample-2',
-    birdName: 'Pato de collar',
-    scientificName: 'Callonetta leucophrys',
-    date: '2026-10-22',
-    time: '09:20',
-    placeName: 'Río Quinto - Sector Dique Chico',
-    lat: -33.6660,
-    lng: -65.4760,
-    count: 3,
-    category: 'acuaticas',
-    behavior: 'En el agua',
-    photoUrl: '/birds/pato-de-collar.jpg',
-    notes: 'Pato pequeño y vistoso nadando en el remanso. Macho con franja negra en la cabeza y pecho rosáceo con pecas.',
-    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 2
-  },
-  {
-    id: 'eco-sample-3',
-    birdName: 'Hornero',
-    scientificName: 'Furnarius rufus',
-    date: '2026-10-22',
-    time: '11:15',
-    placeName: 'Plaza Pedernera (Centro Urbano)',
-    lat: -33.6710,
-    lng: -65.4600,
-    count: 2,
-    category: 'arboles',
-    behavior: 'En nido',
-    photoUrl: '/birds/hornero.jpg',
-    notes: 'Ave mediana de plumaje pardo rojizo. Construyendo su nido de barro sobre la rama de una tipa.',
-    createdAt: Date.now() - 1000 * 60 * 60 * 24 * 1
-  },
-  {
-    id: 'eco-sample-4',
-    birdName: 'Carpintero campestre',
-    scientificName: 'Colaptes campestris',
-    date: '2026-10-23',
-    time: '15:30',
-    placeName: 'Parque Costanera Río Quinto',
-    lat: -33.6745,
-    lng: -65.4620,
-    count: 1,
-    category: 'pastizales',
-    behavior: 'Posado',
-    photoUrl: '/birds/carpintero-campestre.jpg',
-    notes: 'Pájaro mediano con cara y pecho amarillo intenso y nuca negra.',
-    createdAt: Date.now() - 1000 * 60 * 60 * 4
-  },
-  {
-    id: 'eco-sample-5',
-    birdName: 'Tero real',
-    scientificName: 'Himantopus mexicanus',
-    date: '2026-10-23',
-    time: '10:10',
-    placeName: 'Parque La Pedrera (Espejo de Agua)',
-    lat: -33.6895,
-    lng: -65.4320,
-    count: 2,
-    category: 'acuaticas',
-    behavior: 'Alimentándose',
-    photoUrl: '/birds/tero-real.jpg',
-    notes: 'Ave estilizada con plumaje bicolor y larguísimas patas rojo intenso vadeando en la orilla.',
-    createdAt: Date.now() - 1000 * 60 * 60 * 2
-  }
-];
+// No sample sightings: starts empty so each user records their own field sheets
+const INITIAL_SAMPLE_SIGHTINGS: BirdSighting[] = [];
+
 
 export const storageService = {
   // Purge any legacy data from previous versions
@@ -106,6 +25,7 @@ export const storageService = {
       localStorage.removeItem('alas_vm_ecoquest_album_v2');
       localStorage.removeItem('alas_vm_ecoquest_custom_v2');
       localStorage.removeItem('ecoquest_unvim_sightings_v3');
+      localStorage.removeItem('ecoquest_unvim_sightings_v4');
     } catch {
       // ignore
     }
@@ -116,20 +36,16 @@ export const storageService = {
     try {
       const data = localStorage.getItem(SIGHTINGS_KEY);
       if (!data) {
-        localStorage.setItem(SIGHTINGS_KEY, JSON.stringify(INITIAL_SAMPLE_SIGHTINGS));
-        return INITIAL_SAMPLE_SIGHTINGS;
+        localStorage.setItem(SIGHTINGS_KEY, JSON.stringify([]));
+        return [];
       }
       const parsed: BirdSighting[] = JSON.parse(data);
       // Filter out any legacy bird names that are not in the poster
       const cleaned = parsed.filter(s => VALID_BIRD_NAMES.has(s.birdName.toLowerCase()) || s.birdName);
-      if (cleaned.length === 0) {
-        localStorage.setItem(SIGHTINGS_KEY, JSON.stringify(INITIAL_SAMPLE_SIGHTINGS));
-        return INITIAL_SAMPLE_SIGHTINGS;
-      }
       return cleaned;
     } catch (err) {
       console.error('Error reading sightings', err);
-      return INITIAL_SAMPLE_SIGHTINGS;
+      return [];
     }
   },
 
@@ -201,7 +117,7 @@ export const storageService = {
     const album = this.getAlbumChecked();
     const customBirds = this.getCustomBirds();
     const backup = {
-      app: 'Eco-Quest - Proyecto UNViM (Villa Mercedes)',
+      app: 'Eco-Quest - Proyecto UNViMe (Villa Mercedes)',
       exportDate: new Date().toISOString(),
       sightings,
       album,
@@ -261,6 +177,19 @@ export const storageService = {
         img.onerror = reject;
         img.src = e.target?.result as string;
       };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  },
+
+  async readAudioFile(file: File): Promise<string> {
+    const MAX_BYTES = 3.5 * 1024 * 1024; // 3.5 MB max for reliable localStorage offline persistence
+    if (file.size > MAX_BYTES) {
+      throw new Error('AUDIO_TOO_LARGE');
+    }
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = e => resolve(e.target?.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });

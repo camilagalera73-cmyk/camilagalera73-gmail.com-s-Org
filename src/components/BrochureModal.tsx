@@ -22,7 +22,7 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({ isOpen, onClose })
               Documento Fuente Original • Universidad Nacional de Villa Mercedes
             </span>
             <h2 className="text-xl sm:text-2xl font-bold font-serif-fraunces text-[#263b2b]">
-              Lámina Proyecto Eco-quest: Catálogo de Aves
+              Lámina Proyecto Eco-quest: Especies de Villa Mercedes
             </h2>
           </div>
           <button
@@ -36,14 +36,14 @@ export const BrochureModal: React.FC<BrochureModalProps> = ({ isOpen, onClose })
         <div className="flex-1 overflow-auto rounded-2xl bg-slate-900 border border-amber-900/15 p-1 flex items-center justify-center min-h-[50vh]">
           <img
             src="/assets/aistudio/IMG-20261020-WA0049_5cc126f5.jpg"
-            alt="Catálogo de aves Proyecto Eco-quest UNViM"
+            alt="Catálogo de aves Proyecto Eco-quest UNViMe"
             className="w-full h-auto object-contain rounded-xl max-h-[75vh]"
           />
         </div>
 
         <div className="mt-3 pt-3 border-t border-amber-900/15 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-600">
           <div className="flex items-center gap-2">
-            <img src="/unvim-logo.png" alt="UNViM" className="w-5 h-5 object-contain" />
+            <img src="/unvim-logo.png" alt="UNViMe" className="w-5 h-5 object-contain" />
             <span>Licenciatura en Diseño de Comunicación • Tecnicatura Superior en Gestión Ambiental</span>
           </div>
           <button

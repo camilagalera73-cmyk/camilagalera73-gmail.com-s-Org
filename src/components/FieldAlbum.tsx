@@ -11,6 +11,7 @@ interface FieldAlbumProps {
 
 export const FieldAlbum: React.FC<FieldAlbumProps> = ({ birds, onSelectBird }) => {
   const [checkedMap, setCheckedMap] = useState<Record<string, boolean>>({});
+  const [confirmClear, setConfirmClear] = useState(false);
 
   useEffect(() => {
     const saved = storageService.getAlbumChecked();
@@ -40,10 +41,9 @@ export const FieldAlbum: React.FC<FieldAlbumProps> = ({ birds, onSelectBird }) =
   };
 
   const handleClearAll = () => {
-    if (window.confirm('¿Seguro que deseas desmarcar todas las aves observadas de tu álbum?')) {
-      setCheckedMap({});
-      storageService.setAlbumChecked({});
-    }
+    setCheckedMap({});
+    storageService.setAlbumChecked({});
+    setConfirmClear(false);
   };
 
   const categories: EcoQuestCategory[] = ['acuaticas', 'arboles', 'pastizales'];
@@ -81,21 +81,42 @@ export const FieldAlbum: React.FC<FieldAlbumProps> = ({ birds, onSelectBird }) =
               Álbum de Monitoreo de Especies
             </h2>
             <p className="text-sm text-slate-600 mt-1">
-              Marcá las aves del catálogo que vayas reconociendo en tus salidas de campo por Villa Mercedes.
+              Marcá las especies que vayas reconociendo en tus salidas de campo por Villa Mercedes.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <span className="text-sm font-bold text-[#263b2b]">
               Viste {spottedCount} de {totalBirds} especies ({progressPercent}%)
             </span>
-            <button
-              onClick={handleClearAll}
-              className="text-xs text-rose-700 hover:text-rose-900 font-semibold px-2 py-1 rounded-lg hover:bg-rose-50 transition"
-              title="Restablecer marcas"
-            >
-              Desmarcar todas
-            </button>
+            {confirmClear ? (
+              <div className="flex items-center gap-1.5 bg-rose-50 border border-rose-200 rounded-xl px-2.5 py-1">
+                <span className="text-xs font-bold text-rose-900">¿Desmarcar todo?</span>
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="text-xs font-extrabold bg-rose-600 text-white px-2 py-0.5 rounded-lg hover:bg-rose-700 transition"
+                >
+                  Sí
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setConfirmClear(false)}
+                  className="text-xs font-bold bg-white text-slate-700 border border-slate-200 px-2 py-0.5 rounded-lg hover:bg-slate-100 transition"
+                >
+                  No
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={() => setConfirmClear(true)}
+                className="text-xs text-rose-700 hover:text-rose-900 font-semibold px-2 py-1 rounded-lg hover:bg-rose-50 transition"
+                title="Restablecer marcas"
+              >
+                Desmarcar todas
+              </button>
+            )}
           </div>
         </div>
 
@@ -114,7 +135,7 @@ export const FieldAlbum: React.FC<FieldAlbumProps> = ({ birds, onSelectBird }) =
           <div className="mt-5 p-4 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-950 flex items-center gap-3 animate-bounce">
             <Trophy className="w-6 h-6 text-amber-500 shrink-0" />
             <div>
-              <p className="font-bold text-sm">¡Felicitaciones! Has registrado las 22 aves del catálogo Eco-quest.</p>
+              <p className="font-bold text-sm">¡Felicitaciones! Has registrado las 22 aves de Villa Mercedes.</p>
               <p className="text-xs text-emerald-800">Completaste el monitoreo de la biósfera en Villa Mercedes.</p>
             </div>
           </div>

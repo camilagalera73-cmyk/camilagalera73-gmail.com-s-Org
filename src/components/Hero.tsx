@@ -2,11 +2,9 @@ import React from 'react';
 import { Camera, Sparkles, ArrowRight, BookOpen, Eye, Users } from 'lucide-react';
 
 interface HeroProps {
-  onOpenMap: () => void;
   onOpenNewSighting: () => void;
-  onOpenCatalog: () => void;
   onOpenFieldNotebook: () => void;
-  onOpenExpedition?: () => void;
+  onOpenCatalog?: () => void;
 }
 
 export const Hero: React.FC<HeroProps> = ({
@@ -21,48 +19,46 @@ export const Hero: React.FC<HeroProps> = ({
         <div className="absolute -left-20 -top-20 w-96 h-96 rounded-full bg-[#78bfd5]/15 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 max-w-4xl mx-auto">
-          {/* Institutional badge: Binocular icon box + "Un poco de nuestro proyecto" pill */}
-          <div className="flex flex-wrap items-center gap-2.5 mb-6">
-            <div className="h-10 w-10 rounded-2xl overflow-hidden bg-white/95 border border-amber-400/40 p-1.5 shadow-md flex items-center justify-center shrink-0">
-              <img
-                src="/logo.png"
-                alt="Binoculares Eco-Quest"
-                className="w-full h-full object-contain"
-                onError={(e) => {
-                  const target = e.currentTarget;
-                  if (!target.src.includes('icon-192.png')) {
-                    target.src = '/icon-192.png';
-                  }
-                }}
-              />
-            </div>
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#f4bb29] text-[#263b2b] text-xs font-extrabold shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-[#263b2b]" />
+          {/* Institutional badge: Binocular isologo without background (100% transparent) + "Un poco de nuestro proyecto" pill */}
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <img
+              src="/isologo_transparent.png?v=7"
+              alt="Binoculares Eco-Quest"
+              className="h-10 sm:h-11 w-auto object-contain shrink-0 filter drop-shadow-sm"
+              onError={(e) => {
+                const target = e.currentTarget;
+                if (!target.src.includes('logo.png')) {
+                  target.src = '/logo.png?v=7';
+                }
+              }}
+            />
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#3a1c36] text-white text-xs sm:text-sm font-extrabold shadow-sm border border-white/20">
+              <Sparkles className="w-3.5 h-3.5 text-white" />
               <span>Un poco de nuestro proyecto</span>
             </div>
           </div>
 
           {/* Main Title Question */}
-          <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold font-serif-fraunces leading-[1.15] text-white tracking-tight">
+          <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold leading-[1.15] text-white tracking-tight">
             ¿Alguna vez te detuviste a observar las aves que hay en tu ciudad?
           </h1>
 
           {/* Narrative Text */}
-          <div className="mt-5 space-y-4 text-sm sm:text-base md:text-lg text-amber-50/95 leading-relaxed font-sans">
+          <div className="mt-5 space-y-4 text-sm sm:text-base md:text-lg text-white leading-relaxed">
             <p>
-              <strong className="text-[#f4bb29] font-bold">Eco-Quest</strong> es una iniciativa que te invita a descubrir, observar y registrar las aves que habitan en Villa Mercedes, San Luis.
+              <strong className="text-[#86efac] font-black">Eco-Quest</strong> es una iniciativa que te invita a descubrir, observar y registrar las aves que habitan en Villa Mercedes, San Luis.
             </p>
-            <p className="text-amber-100/90 text-sm sm:text-base">
+            <p className="text-white/95 text-sm sm:text-base font-normal">
               A través de esta aplicación, cualquier persona puede convertirse en parte de una experiencia colectiva de observación de la naturaleza. No necesitás ser especialista ni tener conocimientos previos: solamente curiosidad, ganas de explorar y prestar atención a lo que sucede a tu alrededor.
             </p>
           </div>
 
           {/* Section: ¿Para qué hacemos esto? */}
           <div className="mt-8 pt-6 border-t border-white/15">
-            <h2 className="text-lg sm:text-2xl font-bold font-serif-fraunces text-[#f4bb29] flex items-center gap-2">
+            <h2 className="text-lg sm:text-2xl font-bold text-[#86efac] flex items-center gap-2">
               ¿Para qué hacemos esto?
             </h2>
-            <div className="mt-3 space-y-3 text-xs sm:text-sm md:text-base text-amber-100/90 leading-relaxed">
+            <div className="mt-3 space-y-3 text-xs sm:text-sm md:text-base text-white/95 leading-relaxed font-normal">
               <p>
                 Las aves pueden darnos pistas importantes sobre las condiciones del ambiente en el que vivimos. Conocer qué especies están presentes, dónde las encontramos y cómo varía su presencia nos permite reunir información sobre la biodiversidad local.
               </p>
@@ -74,7 +70,7 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Section: ¿Cómo podés participar? */}
           <div className="mt-8 pt-6 border-t border-white/15">
-            <h2 className="text-lg sm:text-2xl font-bold font-serif-fraunces text-[#f4bb29] mb-4">
+            <h2 className="text-lg sm:text-2xl font-bold text-[#86efac] mb-4">
               ¿Cómo podés participar?
             </h2>
 
@@ -83,11 +79,11 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 p-4 flex flex-col justify-between overflow-hidden group">
                 <div>
                   <div className="flex items-center gap-2 mb-2.5">
-                    <span className="w-6 h-6 rounded-full bg-[#f4bb29] text-[#263b2b] font-black text-xs flex items-center justify-center shrink-0">
+                    <span className="w-6 h-6 rounded-full bg-[#3a1c36] text-white font-black text-xs flex items-center justify-center shrink-0 border border-white/20">
                       1
                     </span>
-                    <h3 className="font-extrabold text-base text-white font-serif-fraunces flex items-center gap-1.5">
-                      <Eye className="w-4 h-4 text-[#f4bb29]" />
+                    <h3 className="font-extrabold text-base text-white flex items-center gap-1.5">
+                      <Eye className="w-4 h-4 text-[#86efac]" />
                       Observá
                     </h3>
                   </div>
@@ -107,7 +103,7 @@ export const Hero: React.FC<HeroProps> = ({
                     />
                   </div>
 
-                  <p className="text-sm sm:text-base text-amber-50 leading-snug">
+                  <p className="text-sm sm:text-base text-white font-normal leading-snug">
                     Prestá atención a las aves que encuentres en tu entorno.
                   </p>
                 </div>
@@ -117,16 +113,16 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 p-4 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-2.5">
-                    <span className="w-7 h-7 rounded-full bg-[#f4bb29] text-[#263b2b] font-black text-sm flex items-center justify-center shrink-0">
+                    <span className="w-7 h-7 rounded-full bg-[#3a1c36] text-white font-black text-sm flex items-center justify-center shrink-0 border border-white/20">
                       2
                     </span>
-                    <h3 className="font-extrabold text-lg text-white font-serif-fraunces flex items-center gap-1.5">
-                      <BookOpen className="w-4 h-4 text-[#f4bb29]" />
+                    <h3 className="font-extrabold text-lg text-white flex items-center gap-1.5">
+                      <BookOpen className="w-4 h-4 text-[#86efac]" />
                       Registrá
                     </h3>
                   </div>
 
-                  <p className="text-sm sm:text-base text-amber-50 leading-relaxed mb-4">
+                  <p className="text-sm sm:text-base text-white font-normal leading-relaxed mb-4">
                     Compartí tus observaciones mediante la aplicación.
                   </p>
                 </div>
@@ -134,9 +130,9 @@ export const Hero: React.FC<HeroProps> = ({
                 <div className="pt-2 space-y-2">
                   <button
                     onClick={onOpenFieldNotebook}
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm sm:text-base font-extrabold bg-[#f4bb29] text-[#263b2b] hover:bg-[#ffc940] transition shadow-md active:scale-95"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl text-sm sm:text-base font-extrabold bg-[#3a1c36] text-white hover:bg-[#281325] border border-white/20 transition shadow-md active:scale-95"
                   >
-                    <BookOpen className="w-4 h-4" />
+                    <BookOpen className="w-4 h-4 text-emerald-200" />
                     <span>Ir a la libreta de campo</span>
                   </button>
                   <button
@@ -153,16 +149,16 @@ export const Hero: React.FC<HeroProps> = ({
               <div className="rounded-2xl bg-white/10 backdrop-blur-sm border border-white/15 p-4 flex flex-col justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-2.5">
-                    <span className="w-7 h-7 rounded-full bg-[#f4bb29] text-[#263b2b] font-black text-sm flex items-center justify-center shrink-0">
+                    <span className="w-7 h-7 rounded-full bg-[#3a1c36] text-white font-black text-sm flex items-center justify-center shrink-0 border border-white/20">
                       3
                     </span>
-                    <h3 className="font-extrabold text-lg text-white font-serif-fraunces flex items-center gap-1.5">
-                      <Users className="w-4 h-4 text-[#f4bb29]" />
+                    <h3 className="font-extrabold text-lg text-white flex items-center gap-1.5">
+                      <Users className="w-4 h-4 text-[#86efac]" />
                       Contribuí
                     </h3>
                   </div>
 
-                  <p className="text-sm sm:text-base text-amber-50 leading-relaxed">
+                  <p className="text-sm sm:text-base text-white font-normal leading-relaxed">
                     Sumá información para conocer mejor la biodiversidad de nuestra ciudad.
                   </p>
                 </div>
@@ -177,10 +173,10 @@ export const Hero: React.FC<HeroProps> = ({
 
           {/* Closing callout */}
           <div className="mt-8 p-6 sm:p-7 rounded-3xl bg-white/10 backdrop-blur-md border border-white/20 text-left">
-            <h4 className="font-serif-fraunces text-lg sm:text-xl font-bold text-[#f4bb29] mb-2">
+            <h4 className="text-lg sm:text-xl font-bold text-[#86efac] mb-2">
               Cada observación cuenta.
             </h4>
-            <p className="text-sm sm:text-base text-amber-50 leading-relaxed">
+            <p className="text-sm sm:text-base text-white font-normal leading-relaxed">
               No importa si sabés mucho o poco sobre aves. Tu participación puede ayudar a construir un mayor conocimiento sobre el ambiente que compartimos.
             </p>
             <p className="mt-2.5 text-sm sm:text-base font-extrabold text-white">
@@ -193,11 +189,11 @@ export const Hero: React.FC<HeroProps> = ({
                 href="https://extension.unvime.edu.ar/galeria/cmr0qplo10000f93lhcigk4w0"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 px-7 py-3.5 sm:py-4 rounded-full text-sm sm:text-base font-extrabold bg-[#f4bb29] text-[#263b2b] hover:bg-[#ffc940] transition shadow-xl active:scale-95"
+                className="inline-flex items-center gap-2.5 px-7 py-3.5 sm:py-4 rounded-full text-sm sm:text-base font-extrabold bg-[#3a1c36] text-white hover:bg-[#281325] border border-white/20 transition shadow-xl active:scale-95"
               >
-                <Camera className="w-5 h-5 text-[#263b2b]" />
+                <Camera className="w-5 h-5 text-amber-200" />
                 <span>Ver fotos y aportes de la comunidad</span>
-                <ArrowRight className="w-5 h-5" />
+                <ArrowRight className="w-5 h-5 text-amber-200" />
               </a>
             </div>
           </div>

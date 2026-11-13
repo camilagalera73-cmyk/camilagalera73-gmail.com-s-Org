@@ -10,7 +10,7 @@ interface TriviaQuestion {
   explanation: string;
 }
 
-// Trivia questions strictly based on the 22 species of the Eco-quest UNViM poster
+// Trivia questions strictly based on the 22 species of the Eco-quest UNViMe poster
 const TRIVIA_DATA: Record<number, TriviaQuestion[]> = {
   0: [ // Principiante
     {
@@ -221,19 +221,17 @@ export const FieldGames: React.FC = () => {
       {/* Section Header with Official Logo */}
       <div className="text-center max-w-2xl mx-auto mb-10">
         <div className="flex flex-wrap items-center justify-center gap-3 mb-3">
-          <div className="h-11 w-11 rounded-2xl overflow-hidden bg-white/95 p-1 border border-amber-900/15 shadow-sm flex items-center justify-center shrink-0">
-            <img
-              src="/logo.png"
-              alt="Logo Eco-Quest"
-              className="w-full h-full object-contain"
-              onError={(e) => {
-                const target = e.currentTarget;
-                if (!target.src.includes('icon-192.png')) {
-                  target.src = '/icon-192.png';
-                }
-              }}
-            />
-          </div>
+          <img
+            src="/isologo_transparent.png?v=7"
+            alt="Logo Eco-Quest"
+            className="h-10 w-auto object-contain shrink-0"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (!target.src.includes('icon-192.png')) {
+                target.src = '/icon-192.png';
+              }
+            }}
+          />
           <p className="text-xs font-extrabold uppercase tracking-widest text-[#9a561d]">
             Juegos y Trivia • Eco-Quest
           </p>
@@ -274,19 +272,11 @@ export const FieldGames: React.FC = () => {
               {/* Trivia Header with Logo */}
             <div className="flex items-center justify-between gap-2 pb-3 border-b border-amber-900/10 mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-xl overflow-hidden bg-white/95 p-1 shadow-sm border border-amber-900/15 shrink-0 flex items-center justify-center">
-                  <img
-                    src="/logo.png"
-                    alt="Logo Eco-Quest"
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      if (!target.src.includes('icon-192.png')) {
-                        target.src = '/icon-192.png';
-                      }
-                    }}
-                  />
-                </div>
+                <img
+                  src="/isologo_transparent.png?v=7"
+                  alt="Logo Eco-Quest"
+                  className="h-8 w-auto object-contain shrink-0"
+                />
                 <h3 className="text-lg sm:text-xl font-bold font-serif-fraunces text-[#263b2b] flex items-center gap-1.5">
                   <HelpCircle className="w-5 h-5 text-[#b66b22]" />
                   Trivia Eco-quest (22 Aves)
@@ -325,7 +315,7 @@ export const FieldGames: React.FC = () => {
                 </p>
                 <button
                   onClick={() => handleRestartTrivia(level)}
-                  className="mt-5 px-6 py-3 rounded-full text-sm font-bold bg-[#b66b22] text-white hover:bg-[#9a561d] transition shadow-md inline-flex items-center gap-2"
+                  className="mt-5 px-6 py-3 rounded-full text-sm font-bold bg-[#3a1c36] text-white hover:bg-[#281325] transition shadow-md inline-flex items-center gap-2"
                 >
                   <RotateCcw className="w-4 h-4" />
                   Jugar de nuevo este nivel
@@ -335,10 +325,6 @@ export const FieldGames: React.FC = () => {
               <div>
                 <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700 mb-3">
                   <span>Pregunta {currentQ + 1} de {currentQuestions.length}</span>
-                  <span className="text-amber-900 font-semibold flex items-center gap-1">
-                    <Sparkles className="w-4 h-4 text-amber-600" />
-                    Catálogo de Villa Mercedes
-                  </span>
                 </div>
 
                 {/* Bird visual aid card */}
@@ -347,7 +333,7 @@ export const FieldGames: React.FC = () => {
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-white border border-amber-300 shadow-sm shrink-0 flex items-center justify-center">
                       <img
                         src={qItem.photoUrl}
-                        alt="Ave del catálogo"
+                        alt="Ave de Villa Mercedes"
                         className="w-full h-full object-cover"
                         onError={(e) => {
                           e.currentTarget.style.display = 'none';
@@ -439,19 +425,11 @@ export const FieldGames: React.FC = () => {
               {/* Memotest Header with Logo */}
             <div className="flex items-center justify-between pb-3 border-b border-green-900/10 mb-4">
               <div className="flex items-center gap-2.5">
-                <div className="h-9 w-9 rounded-xl overflow-hidden bg-white/95 p-1 shadow-sm border border-emerald-900/15 shrink-0 flex items-center justify-center">
-                  <img
-                    src="/logo.png"
-                    alt="Logo Eco-Quest"
-                    className="w-full h-full object-contain"
-                    onError={(e) => {
-                      const target = e.currentTarget;
-                      if (!target.src.includes('icon-192.png')) {
-                        target.src = '/icon-192.png';
-                      }
-                    }}
-                  />
-                </div>
+                <img
+                  src="/isologo_transparent.png?v=7"
+                  alt="Logo Eco-Quest"
+                  className="h-8 w-auto object-contain shrink-0"
+                />
                 <h3 className="text-lg sm:text-xl font-bold font-serif-fraunces text-[#263b2b] flex items-center gap-1.5">
                   <Shuffle className="w-5 h-5 text-emerald-700" />
                   Memotest Eco-Quest
@@ -464,7 +442,7 @@ export const FieldGames: React.FC = () => {
 
             {memoryWon && (
               <div className="mb-4 p-3.5 bg-white rounded-2xl border-2 border-emerald-400 text-emerald-950 text-xs font-bold text-center shadow-sm animate-in fade-in">
-                ¡Memoria impecable! Encontraste los 6 pares de aves del catálogo en {attempts} intentos. 🎉
+                ¡Memoria impecable! Encontraste los 6 pares de aves en {attempts} intentos. 🎉
               </div>
             )}
 
@@ -501,19 +479,17 @@ export const FieldGames: React.FC = () => {
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center">
-                        <div className="w-8 h-8 rounded-full overflow-hidden bg-white/95 p-0.5 border border-amber-400/50 shadow-sm flex items-center justify-center">
-                          <img
-                            src="/logo.png"
-                            alt="Eco-Quest"
-                            className="w-full h-full object-contain"
-                            onError={(e) => {
-                              const target = e.currentTarget;
-                              if (!target.src.includes('icon-192.png')) {
-                                target.src = '/icon-192.png';
-                              }
-                            }}
-                          />
-                        </div>
+                        <img
+                          src="/isologo_transparent.png?v=7"
+                          alt="Eco-Quest"
+                          className="h-7 w-auto object-contain"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.src.includes('icon-192.png')) {
+                              target.src = '/icon-192.png';
+                            }
+                          }}
+                        />
                         <span className="text-[9px] font-bold text-amber-200 mt-1 uppercase tracking-wider">
                           Eco-Quest
                         </span>
@@ -527,7 +503,7 @@ export const FieldGames: React.FC = () => {
 
           <div className="mt-5 pt-3 border-t border-green-900/10 flex items-center justify-between">
             <span className="text-[11px] text-slate-600 font-medium">
-              Encontrá los 6 pares de las aves del catálogo.
+              Encontrá los 6 pares de las aves de Villa Mercedes.
             </span>
             <button
               onClick={initMemory}

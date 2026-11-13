@@ -120,7 +120,7 @@ export const ConservationGuide: React.FC = () => {
               </div>
 
               <p className="text-xs text-slate-700 leading-relaxed mb-4">
-                El Río Quinto y sus diques albergan la mayor diversidad de aves acuáticas del catálogo Eco-quest (patos, garzas, cuervillos y gallaretas). Mantener limpios sus cauces es indispensable para su subsistencia.
+                El Río Quinto y sus diques albergan una gran diversidad de aves acuáticas (patos, garzas, cuervillos y gallaretas). Mantener limpios sus cauces es indispensable para su subsistencia.
               </p>
 
               <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-950 space-y-2">
@@ -129,14 +129,6 @@ export const ConservationGuide: React.FC = () => {
                 <p>• <b>No usar reproducciones sonoras:</b> Hacer sonar cantos grabados perturba el cortejo y la nidificación de las aves.</p>
                 <p>• <b>Respetar los nidos:</b> Nunca toques huevos ni te quedes largo tiempo junto a un nido para evitar alertar predadores.</p>
               </div>
-            </div>
-
-            <div className="mt-5 pt-3 border-t border-amber-900/10 flex items-center justify-between text-xs text-slate-500">
-              <div className="flex items-center gap-2">
-                <img src="/unvim-logo.png" alt="UNViM" className="w-5 h-5 object-contain" />
-                <span>Universidad Nacional de Villa Mercedes</span>
-              </div>
-              <span className="font-bold text-[#263b2b]">Proyecto Eco-quest</span>
             </div>
           </div>
         </div>

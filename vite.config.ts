@@ -44,8 +44,11 @@ export default defineConfig(() => {
           ],
         },
         workbox: {
+          cleanupOutdatedCaches: true,
+          skipWaiting: true,
+          clientsClaim: true,
           maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
-          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json,jpg,jpeg}'],
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2,json,jpg,jpeg,mp3}'],
           runtimeCaching: [
             {
               urlPattern: /^https:\/\/[abc]\.tile\.openstreetmap\.org\/.*/i,
@@ -106,8 +109,7 @@ export default defineConfig(() => {
           ],
         },
         devOptions: {
-          enabled: true,
-          type: 'module',
+          enabled: false,
         },
       }),
     ],
